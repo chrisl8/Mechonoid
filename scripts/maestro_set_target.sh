@@ -12,7 +12,7 @@
 # You can use the find_maestro.sh command to find the port:
 # ./maestro_set_target.sh $(./find_Maestro.sh) 0 2000
 #
-# NOTICE that the incremnt is "quater microseconds",
+# NOTICE that the increment is "quarter microseconds",
 # so you need to multiple whatever your microseconds are by four,
 # and no decimals are allowed.
 
