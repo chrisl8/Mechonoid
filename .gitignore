@@ -1,0 +1,6 @@
+*.pyc
+.idea
+node/node_modules/
+website/node_modules/
+website/app/*.js
+website/app/*.js.map
