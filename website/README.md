@@ -1,3 +1,7 @@
+# Setup with Ant Design:
+
+https://ant.design/docs/react/use-with-create-react-app#Install-and-Initialization
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
