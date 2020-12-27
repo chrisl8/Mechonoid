@@ -13,7 +13,7 @@
 # ./maestro_set_target.sh $(./find_Maestro.sh) 0 2000
 #
 # NOTICE that the increment is "quarter microseconds",
-# so you need to multiple whatever your microseconds are by four,
+# so you need to multiply whatever your microseconds are by four,
 # and no decimals are allowed.
 
 DEVICE=$1

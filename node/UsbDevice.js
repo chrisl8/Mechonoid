@@ -6,7 +6,7 @@ class UsbDevice {
   constructor(uniqueDeviceString, stringLocation) {
     this.uniqueDeviceString = uniqueDeviceString;
     // stringLocation tells what line of the udevadm output the uniqueDeviceString is found in.
-    // Usually 'product', 'name' or 'manufacturer'
+    // Usually 'product', 'name' or 'manufacturer '
     this.stringLocation = stringLocation;
   }
 

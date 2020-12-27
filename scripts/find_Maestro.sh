@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 # This will find the Maestro controller.
-# This is currently hard coded to the 18. In the future I may want to provide options for others,
-# or differnt scripts for each model?
-# The Maestro has TWO ports, but the first is always he one I want,
+# This is currently hard coded to the 18.
+# In the future I may want to provide options for other models.
+
+# The Maestro has TWO ports, but the first is always the one I want,
 # so this works.
 
 # Grab and save the path to this script
