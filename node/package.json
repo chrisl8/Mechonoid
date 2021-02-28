@@ -1,0 +1,52 @@
+{
+  "name": "robotanything",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Node scripts to run a generic killer robot",
+  "main": "index.js",
+  "dependencies": {
+    "cross-blob": "^2.0.0",
+    "express": "^4.17.1",
+    "lodash": "^4.17.21",
+    "pigpio": "^3.3.0",
+    "pololu-maestro": "git+https://github.com/chrisl8/node-pololumaestro.git",
+    "polycrc": "^1.0.1",
+    "serialport": "^9.0.4",
+    "socket.io": "^3.1.1",
+    "object-observer": "git+https://github.com/chrisl8/object-observer.git"
+  },
+  "devDependencies": {
+    "eslint": "^7.4.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^8.0.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jest": "^24.0.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.20.3",
+    "eslint-plugin-react-hooks": "^4.0.8",
+    "jest": "^26.4.2",
+    "prettier": "^2.1.1"
+  },
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "jest --config ./jest.config.json"
+  },
+  "author": "Christen Lofland",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chrisl8/ArloBot.git"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/*Spec.js"
+    ],
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true
+  },
+  "wallaby": {
+    "autoDetect": true
+  }
+}
