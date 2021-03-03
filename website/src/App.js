@@ -4,6 +4,7 @@ import { Layout, Row, Col, Button } from 'antd';
 import './App.css';
 import Servo360 from './components/Servo360';
 import Servo from './components/Servo';
+import Server360Positions from './components/Server360Positions';
 
 const { Header, Content, Footer } = Layout;
 
@@ -49,13 +50,6 @@ const App = () => {
     window.open(`http://192.168.1.31/`, '_blank');
   };
 
-  const handleShoulderButtons = (event) => {
-    socket.emit('sendServoToLocation', {
-      target: 'shoulders',
-      value: event.target.innerText.toLowerCase(),
-    });
-  };
-
   return (
     <Layout className="layout">
       <Header>
@@ -78,55 +72,21 @@ const App = () => {
               </Col>
               <Col style={{ margin: 8 }}>
                 <Servo360 name="head" socket={socket} />
+                <Server360Positions
+                  socket={socket}
+                  servoGroup="shoulders"
+                  locations={robotModel.servos.head.switchClosed}
+                />
               </Col>
               <Col style={{ margin: 8 }}>
                 {/* TODO: Add button indicators of Left/Right/Center positions. */}
                 {/* TODO: Add indicators of being in between button places. */}
                 <Servo360 name="shoulders" socket={socket} />
-                <Row style={{ marginRight: 18 }}>
-                  {/* TODO: Button Colors: */}
-                  {/* Green: Entry is HERE. Should it be unclickable? */}
-                  {/* Red: Moving TO here. */}
-                  {/* Hollow: Can be selected as a new place to go. */}
-                  {/* Arrow pointing from center to Left or Right when left/right of center, but not at any specific one of the 3 */}
-                  {/* No arrows and everything Blue on startup if no swiches are closed */}
-                  <Col span={4}>
-                    <Button
-                      type={
-                        robotModel.servos.shoulders.switchClosed.left
-                          ? 'primary'
-                          : ''
-                      }
-                      onClick={handleShoulderButtons}
-                    >
-                      Left
-                    </Button>
-                  </Col>
-                  <Col span={16} style={{ textAlign: 'center' }}>
-                    <Button
-                      type={
-                        robotModel.servos.shoulders.switchClosed.center
-                          ? 'primary'
-                          : ''
-                      }
-                      onClick={handleShoulderButtons}
-                    >
-                      Center
-                    </Button>
-                  </Col>
-                  <Col span={4}>
-                    <Button
-                      type={
-                        robotModel.servos.shoulders.switchClosed.right
-                          ? 'primary'
-                          : ''
-                      }
-                      onClick={handleShoulderButtons}
-                    >
-                      Right
-                    </Button>
-                  </Col>
-                </Row>
+                <Server360Positions
+                  socket={socket}
+                  servoGroup="shoulders"
+                  locations={robotModel.servos.shoulders.switchClosed}
+                />
               </Col>
             </Row>
             <Row>
