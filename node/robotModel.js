@@ -22,12 +22,49 @@ const hardwareFunctions = {
 };
 
 const robotModel = {
+  robotName: 'Dalek One',
   status: 'Online',
   mainBatteryVoltage: null,
   servos: {
     // Remember to multiply us by 4!
     eyeStalk: {
       channel: 0,
+      type: 180,
+      minimum: 500 * 4,
+      maximum: 2500 * 4,
+      center: 1450 * 4,
+      off: 0,
+      lastValue: 0,
+    },
+    leftArmVertical: {
+      channel: 3,
+      type: 180,
+      minimum: 500 * 4,
+      maximum: 2500 * 4,
+      center: 1450 * 4,
+      off: 0,
+      lastValue: 0,
+    },
+    leftArmHorizontal: {
+      channel: 4,
+      type: 180,
+      minimum: 500 * 4,
+      maximum: 2500 * 4,
+      center: 1450 * 4,
+      off: 0,
+      lastValue: 0,
+    },
+    rightArmVertical: {
+      channel: 5,
+      type: 180,
+      minimum: 500 * 4,
+      maximum: 2500 * 4,
+      center: 1450 * 4,
+      off: 0,
+      lastValue: 0,
+    },
+    rightArmHorizontal: {
+      channel: 6,
       type: 180,
       minimum: 500 * 4,
       maximum: 2500 * 4,
