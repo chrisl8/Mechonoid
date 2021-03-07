@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import openSocket from 'socket.io-client';
 import { Layout, Row, Col, Button } from 'antd';
 import './App.css';
-import Servo360 from './components/Servo360';
-import Servo from './components/Servo';
-import Server360Positions from './components/Server360Positions';
+import Headers from './components/Headers';
+import Servos from './components/Servos';
+import Servo360s from './components/Servo360s';
 
 const { Header, Content, Footer } = Layout;
 
@@ -12,14 +12,12 @@ const App = () => {
   const [socket, setSocket] = useState(null);
   const [robotModel, setRobotModel] = useState({
     status: 'Robot Offline',
+    robotName: 'Robot Anything',
   });
 
   useEffect(() => {
     // componentDidMount
     // https://medium.com/@felippenardi/how-to-do-componentdidmount-with-react-hooks-553ba39d1571
-
-    // TODO: Set this from data from the server instead
-    document.title = 'Dalek One';
 
     let newSocket;
     if (window.location.hostname === 'localhost') {
@@ -51,66 +49,52 @@ const App = () => {
   };
 
   return (
-    <Layout className="layout">
-      <Header>
-        <span style={{ color: 'rgb(175 38 38 / 85%)', fontSize: '2em' }}>
-          Dalek One{' '}
-          {robotModel.status === 'Robot Offline' && (
-            <span>
-              <strong>&nbsp;-&nbsp;OFFLINE!</strong>
-            </span>
-          )}
-        </span>
-      </Header>
-      {robotModel.status === 'Online' && (
-        <Content style={{ margin: '24px 16px 0' }}>
-          <div>
-            {/* TODO: Add button to home/center all servos. */}
-            <Row>
-              <Col style={{ margin: 8 }}>
-                <Servo name="eyeStalk" socket={socket} />
-              </Col>
-              <Col style={{ margin: 8 }}>
-                <Servo360 name="head" socket={socket} />
-                <Server360Positions
-                  socket={socket}
-                  servoGroup="head"
-                  locations={robotModel.servos.head.switchClosed}
-                />
-              </Col>
-              <Col style={{ margin: 8 }}>
-                {/* TODO: Add button indicators of Left/Right/Center positions. */}
-                {/* TODO: Add indicators of being in between button places. */}
-                <Servo360 name="shoulders" socket={socket} />
-                <Server360Positions
-                  socket={socket}
-                  servoGroup="shoulders"
-                  locations={robotModel.servos.shoulders.switchClosed}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col style={{ margin: 8 }}>
-                <Button onClick={handleLightsButton}>Lights</Button>
-              </Col>
-            </Row>
-            <Row>
-              <Col style={{ margin: 8 }}>
-                <hr />
-                <p>
-                  Servo 360 sliders control speed and snap to 0 (stopped) when
-                  you let go.
-                  <br />
-                  Servo sliders control absolute position of the servo and stay
-                  put when released.
-                </p>
-              </Col>
-            </Row>
-          </div>
-        </Content>
-      )}
-      <Footer style={{ textAlign: 'center' }}>Robot Anything</Footer>
-    </Layout>
+    <>
+      <Headers title={robotModel.robotName} />
+      <Layout className="layout">
+        <Header>
+          <span style={{ color: 'rgb(175 38 38 / 85%)', fontSize: '2em' }}>
+            Dalek One{' '}
+            {robotModel.status === 'Robot Offline' && (
+              <span>
+                <strong>&nbsp;-&nbsp;OFFLINE!</strong>
+              </span>
+            )}
+          </span>
+        </Header>
+        {robotModel.status === 'Online' && (
+          <Content style={{ margin: '24px 16px 0' }}>
+            <div>
+              {/* TODO: Add button to home/center all servos. */}
+              <Row>
+                <Servo360s socket={socket} servos={robotModel.servos} />
+              </Row>
+              <Row>
+                <Servos socket={socket} servos={robotModel.servos} />
+              </Row>
+              <Row>
+                <Col style={{ margin: 8 }}>
+                  <Button onClick={handleLightsButton}>Lights</Button>
+                </Col>
+              </Row>
+              <Row>
+                <Col style={{ margin: 8 }}>
+                  <hr />
+                  <p>
+                    Servo 360 sliders control speed and snap to 0 (stopped) when
+                    you let go.
+                    <br />
+                    Servo sliders control absolute position of the servo and
+                    stay put when released.
+                  </p>
+                </Col>
+              </Row>
+            </div>
+          </Content>
+        )}
+        <Footer style={{ textAlign: 'center' }}>Robot Anything</Footer>
+      </Layout>
+    </>
   );
 };
 export default App;

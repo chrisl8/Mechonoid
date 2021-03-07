@@ -12,7 +12,7 @@ const Servo = (props) => {
   const buttons = [];
   for (const [key] of Object.entries(props.locations)) {
     buttons.push(
-      <Col>
+      <Col key={key}>
         <Button
           type={props.locations[key] ? 'primary' : ''}
           onClick={handlePositionButtons}
