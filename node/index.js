@@ -209,7 +209,7 @@ async function main() {
 
   const gpioGlitchFilterInput = 1000;
 
-  function setCenterOffset({ location, entry, operations }) {
+  function setRobotPartPosition({ location, entry, operations }) {
     if (
       operations.indexOf('rectifyCenterOffset') > -1 &&
       robotModel.servos[location].switchClosed[entry]
@@ -230,6 +230,10 @@ async function main() {
         }
       }
     }
+    if (operations.indexOf('setPositionInteger') > -1) {
+      console.log(location, entry, operations);
+      console.log(robotModel.servos[location]);
+    }
   }
 
   function handleGpioSwitch({ pin, location, entry, operations }) {
@@ -244,7 +248,7 @@ async function main() {
     );
 
     // Set initial center offset if available.
-    setCenterOffset({ location, entry, operations });
+    setRobotPartPosition({ location, entry, operations });
 
     // Level must be stable for 10 ms before an alert event is emitted.
     switchPin.glitchFilter(gpioGlitchFilterInput);
@@ -262,7 +266,7 @@ async function main() {
             operateServo360({ servoName: location, value: 0 });
           }
         }
-        setCenterOffset({ location, entry, operations });
+        setRobotPartPosition({ location, entry, operations });
       }
       if (
         robotModel.servos[location].switchClosed[entry] &&
@@ -282,7 +286,9 @@ async function main() {
           value: -lastValue,
         });
       }
-      console.log(`${entry} Switch ${level === 0 ? 'Closed' : 'Open'}`);
+      console.log(
+        `${location} ${entry} Switch ${level === 0 ? 'Closed' : 'Open'}`,
+      );
     });
   }
 

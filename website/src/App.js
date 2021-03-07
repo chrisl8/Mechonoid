@@ -74,7 +74,7 @@ const App = () => {
                 <Servo360 name="head" socket={socket} />
                 <Server360Positions
                   socket={socket}
-                  servoGroup="shoulders"
+                  servoGroup="head"
                   locations={robotModel.servos.head.switchClosed}
                 />
               </Col>

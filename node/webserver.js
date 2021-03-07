@@ -30,7 +30,6 @@ async function start() {
     // TODO: Use https://github.com/gullerya/object-observer to watch for changes to robotModel,
     // TODO: Use lodash's debounce to emit robotModel on changes to the socket.
     const emitRobotModel = debounce(() => {
-      console.log('robotModel updated.');
       socket.emit('robotModel', JSON.stringify(robotModel));
     }, 300);
 
@@ -53,6 +52,7 @@ async function start() {
     });
 
     socket.on('sendServoToLocation', (data) => {
+      console.log(data);
       const selfMoveToCenterSpeed = 160; // Tweaked to get it to fall on center without going past.
       // Hitting the side requires less precision. Might as well go faster, especially if we might have a long ways to go!
       const selfMoveSpeed = 250;
@@ -77,6 +77,7 @@ async function start() {
             // We are either 'left' of center or AT the left switch, so move right.
             // Note this is also skipped if we THINK we are 'left' of center,
             // but the right switch is actually closed, which happens sometimes.
+            console.log(data);
             operateServo360({
               servoName: data.target,
               value: selfMoveToCenterSpeed,
@@ -100,6 +101,12 @@ async function start() {
           operateServo360({ servoName: data.target, value: selfMoveSpeed });
         } else if (destination === 'left') {
           operateServo360({ servoName: data.target, value: -selfMoveSpeed });
+        } else if (destination === 'front') {
+          // TODO: Intelligently move the correct direction based on known position if it is known.
+          operateServo360({ servoName: data.target, value: selfMoveSpeed });
+        } else if (destination === 'back') {
+          // TODO: Intelligently move the correct direction based on known position if it is known.
+          operateServo360({ servoName: data.target, value: selfMoveSpeed });
         }
       }
     });

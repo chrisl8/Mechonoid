@@ -36,6 +36,7 @@ const robotModel = {
       lastValue: 0,
     },
     head: {
+      trulyContinuous: true,
       channel: 1,
       type: 360,
       minimum: 800 * 4,
@@ -49,7 +50,7 @@ const robotModel = {
         right: false,
       },
       lastValue: 0,
-      locationQuadrant: null, // TODO: Sort out some way to track location between pins.
+      locationPoints: null, // Front: 0, 1, Left: 2, 3, Back: 4, 5, Right: 6, 7
       stopOnArrival: null,
     },
     shoulders: {
@@ -92,25 +93,25 @@ const robotModel = {
       pin: 12,
       location: 'head',
       entry: 'front',
-      operations: [],
+      operations: ['setPositionInteger'],
     },
     {
       pin: 16,
       location: 'head',
       entry: 'right',
-      operations: [],
+      operations: ['setPositionInteger'],
     },
     {
       pin: 20,
       location: 'head',
       entry: 'back',
-      operations: [],
+      operations: ['setPositionInteger'],
     },
     {
       pin: 21,
       location: 'head',
       entry: 'left',
-      operations: [],
+      operations: ['setPositionInteger'],
     },
   ],
 };

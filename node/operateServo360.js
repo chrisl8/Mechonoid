@@ -10,7 +10,8 @@ const operateServo360 = ({ servoName, value }) => {
     value === 0 ||
       !robotModel.servos[servoName].switchClosed ||
       (value < 0 && !robotModel.servos[servoName].switchClosed.left) ||
-      (value > 0 && !robotModel.servos[servoName].switchClosed.right),
+      (value > 0 && !robotModel.servos[servoName].switchClosed.right) ||
+      robotModel.servos[servoName].trulyContinuous,
   );
 
   if (
