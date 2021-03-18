@@ -47,7 +47,7 @@ const ApiDocumentation = (props) => {
               href={`${pageURL}/servo360/${group}/0`}
               target="_blank"
               rel="noreferrer"
-            >{`${pageURL}/sendServoToLocation/${group}/0`}</a>
+            >{`${pageURL}/servo360/${group}/0`}</a>
           </li>,
         );
       }
@@ -60,7 +60,7 @@ const ApiDocumentation = (props) => {
               href={`${pageURL}/servo/${group}/0`}
               target="_blank"
               rel="noreferrer"
-            >{`${pageURL}/sendServoToLocation/${group}/0`}</a>
+            >{`${pageURL}/servo/${group}/0`}</a>
           </li>,
         );
       }
