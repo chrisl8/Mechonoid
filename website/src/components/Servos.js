@@ -9,7 +9,11 @@ const Servos = (props) => {
       if (values.type === 180) {
         servos.push(
           <Col key={key} style={{ margin: 8 }}>
-            <Servo name={key} socket={props.socket} />
+            <Servo
+              name={key}
+              socket={props.socket}
+              vertical={values.vertical}
+            />
           </Col>,
         );
       }

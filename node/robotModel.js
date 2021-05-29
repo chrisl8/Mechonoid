@@ -44,6 +44,7 @@ const robotModel = {
       center: 1450 * 4,
       off: 0,
       lastValue: 0,
+      vertical: true,
     },
     leftArmHorizontal: {
       channel: 4,

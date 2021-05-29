@@ -12,6 +12,11 @@ const Servo = (props) => {
     }
   };
 
+  let sliderStyle = { width: 300 };
+  if (props.vertical) {
+    sliderStyle = { height: 300 };
+  }
+
   // TODO: Update current setting to spot on slider from server,
   //       so that if user A move it, user B an see that it has moved.
 
@@ -20,16 +25,18 @@ const Servo = (props) => {
       size="small"
       title="Servo"
       extra={props.name.charAt(0).toUpperCase() + props.name.slice(1)}
-      style={{ width: 300 }}
     >
-      <Slider
-        included={false}
-        value={setting}
-        disabled={disabled}
-        min={-1000}
-        max={1000}
-        onChange={handleSliderChange}
-      />
+      <div style={sliderStyle}>
+        <Slider
+          included={false}
+          value={setting}
+          disabled={disabled}
+          min={-1000}
+          max={1000}
+          onChange={handleSliderChange}
+          vertical={props.vertical}
+        />
+      </div>
     </Card>
   );
 };
