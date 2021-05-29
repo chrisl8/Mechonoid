@@ -21,6 +21,10 @@ sudo apt update
 sudo apt upgrade -y
 
 PACKAGE_TO_INSTALL_LIST=()
+PACKAGE_TO_INSTALL_LIST+=(git)
+#git - It is unlikely that you got this far without git, but just in case.
+PACKAGE_TO_INSTALL_LIST+=(wget)
+#wget is required to install Node Version Manager (nvm)
 PACKAGE_TO_INSTALL_LIST+=(rpi.gpio-common)
 #rpi.gpio-common - Required to use the GPIO pins in Ubuntu
 PACKAGE_TO_INSTALL_LIST+=(unzip)
@@ -79,12 +83,12 @@ fi
 
 # The entire thing must run as root in order to access the GPIO pins,
 # so setting up root to do this
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | sudo bash
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | sudo bash
 sudo bash -ic "nvm install --lts;true"
 sudo bash -ic "npm install pm2@latest -g;true"
 
 # We will do as much setup and such as we can locally though.
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 export NVM_DIR="${HOME}/.nvm"
 # shellcheck source=/home/chrisl8/.nvm/nvm.sh
 [[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh" # This loads nvm
