@@ -8,7 +8,7 @@ This really isn't ready for public consumption yet.
 
 This is intended to run on a Raspberry Pi running **Ubuntu**. 
 
-Put a fresh copy of Ubuntu 18.04 LTS on your robot's Raspberry Pi then run the installation script below.
+Put a fresh copy of Ubuntu 20.04 LTS on your robot's Raspberry Pi then run the installation script below.
 
 ## Install
 There is a script to install everything. Run:
