@@ -10,11 +10,10 @@ BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 #PURPLE='\033[0;35m'
-#LIGHT_PURPLE='\033[1;35m'
 YELLOW='\033[1;33m'
 #LIGHTCYAN='\033[1;36m'
 #LIGHTBLUE='\033[1;34m'
-LIGHTPURPLE='\033[1;35m'
+LIGHT_PURPLE='\033[1;35m'
 NC='\033[0m' # NoColor
 
 sudo apt update
@@ -31,6 +30,8 @@ PACKAGE_TO_INSTALL_LIST+=(unzip)
 #unzip is required to extract downloaded packages for installation
 PACKAGE_TO_INSTALL_LIST+=(build-essential)
 #build-essential includes things like make and libraries required to build the GPIO tools
+PACKAGE_TO_INSTALL_LIST+=(libraspberrypi-bin)
+#libraspberrypi-bin provides extra commands for working with the Raspberry Pi specifically.
 
 sudo apt install -y "${PACKAGE_TO_INSTALL_LIST[@]}"
 
@@ -138,18 +139,32 @@ if ! [[ -f ${HOME}/.robotAnything/config.json ]]; then
   cd
 fi
 
-if ! sudo test -e "/root/.robotAnything";then
+if ! sudo test -e "/root/.robotAnything"; then
   printf "\n${YELLOW}[Creating config data link for root.]${NC}\n"
   sudo ln -s /home/ubuntu/.robotAnything /root
 fi
 
-printf "\n${LIGHTPURPLE}[Updating PM2 and starting/restarting service.]${NC}\n"
+if [[ -f ~/.bashrc ]]; then
+  if ! (grep "${HOME}/${GIT_REPO_AND_FOLDER}" ~/.bashrc >/dev/null); then
+    printf "\n${YELLOW}[Adding RobotAnything Scripts folder to your path in .bashrc]${NC}\n"
+    sh -c "echo \"export PATH=\\\$PATH:${HOME}/${GIT_REPO_AND_FOLDER}\" >> ~/.bashrc"
+  fi
+fi
+
+if [[ -f ~/.zshrc ]]; then
+  if ! (grep "${HOME}/${GIT_REPO_AND_FOLDER}" ~/.zshrc >/dev/null); then
+    printf "\n${YELLOW}[Adding RobotAnything Scripts folder to your path in .zshrc]${NC}\n"
+    sh -c "echo \"export PATH=\\\$PATH:${HOME}/${GIT_REPO_AND_FOLDER}\" >> ~/.zshrc"
+  fi
+fi
+
+printf "\n${LIGHT_PURPLE}[Updating PM2 and starting/restarting service.]${NC}\n"
 # Unfortunately the program has to run as root to use the GPIO library that I'm using
 sudo bash -ic "pm2 update;true"
 "${HOME}"/${GIT_REPO_AND_FOLDER}/startService.sh
 
 if [[ ${NEW_CONFIG} == "1" ]]; then
-  printf "\n${LIGHTPURPLE}NOTICE NOTICE NOTICE NOTICE${NC}\n"
-  printf "\n${LIGHTPURPLE}You MUST edit ${HOME}/.robotAnything/config.json${NC}\n"
-  printf "\n${LIGHTPURPLE}It has been set up with example data that will not work for your robot.${NC}\n"
+  printf "\n${LIGHT_PURPLE}NOTICE NOTICE NOTICE NOTICE${NC}\n"
+  printf "\n${LIGHT_PURPLE}You MUST edit ${HOME}/.robotAnything/config.json${NC}\n"
+  printf "\n${LIGHT_PURPLE}It has been set up with example data that will not work for your robot.${NC}\n"
 fi
