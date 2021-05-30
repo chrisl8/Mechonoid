@@ -9,11 +9,11 @@ set -e
 BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 RED='\033[0;31m'
-PURPLE='\033[0;35m'
-LIGHT_PURPLE='\033[1;35m'
+#PURPLE='\033[0;35m'
+#LIGHT_PURPLE='\033[1;35m'
 YELLOW='\033[1;33m'
-LIGHTCYAN='\033[1;36m'
-LIGHTBLUE='\033[1;34m'
+#LIGHTCYAN='\033[1;36m'
+#LIGHTBLUE='\033[1;34m'
 LIGHTPURPLE='\033[1;35m'
 NC='\033[0m' # NoColor
 
@@ -29,6 +29,8 @@ PACKAGE_TO_INSTALL_LIST+=(rpi.gpio-common)
 #rpi.gpio-common - Required to use the GPIO pins in Ubuntu
 PACKAGE_TO_INSTALL_LIST+=(unzip)
 #unzip is required to extract downloaded packages for installation
+PACKAGE_TO_INSTALL_LIST+=(build-essential)
+#build-essential includes things like make and libraries required to build the GPIO tools
 
 sudo apt install -y "${PACKAGE_TO_INSTALL_LIST[@]}"
 
@@ -36,13 +38,13 @@ if ! (command -v pigpiod -v >/dev/null); then
   printf "\n${YELLOW}[Installing pigpio for GPIO pin access]${NC}\n"
   cd
   wget https://github.com/joan2937/pigpio/archive/master.zip
-  unzip master.zip
+  unzip -o master.zip
   rm master.zip
   cd pigpio-master/
   make
   sudo make install
   cd
-  rm -rf pigpio-master
+  sudo rm -rf pigpio-master
 fi
 
 printf "\n${YELLOW}[Cloning or Updating git repositories]${NC}\n"
@@ -120,7 +122,34 @@ if ! (crontab -l >/dev/null 2>&1) || ! (crontab -l | grep startService >/dev/nul
   ) | crontab -
 fi
 
+if ! [[ -d ${HOME}/.robotAnything ]]; then
+  printf "\n${YELLOW}[Creating config folder.]${NC}\n"
+  cd
+  mkdir .robotAnything
+fi
+
+NEW_CONFIG=0
+
+if ! [[ -f ${HOME}/.robotAnything/config.json ]]; then
+  NEW_CONFIG=1
+  printf "\n${YELLOW}[Creating example config data.]${NC}\n"
+  cd "${HOME}/.robotAnything"
+  cp "${HOME}/${GIT_REPO_AND_FOLDER}/configExample.json" config.json
+  cd
+fi
+
+if ! sudo test -e "/root/.robotAnything";then
+  printf "\n${YELLOW}[Creating config data link for root.]${NC}\n"
+  sudo ln -s /home/ubuntu/.robotAnything /root
+fi
+
 printf "\n${LIGHTPURPLE}[Updating PM2 and starting/restarting service.]${NC}\n"
 # Unfortunately the program has to run as root to use the GPIO library that I'm using
 sudo bash -ic "pm2 update;true"
 "${HOME}"/${GIT_REPO_AND_FOLDER}/startService.sh
+
+if [[ ${NEW_CONFIG} == "1" ]]; then
+  printf "\n${LIGHTPURPLE}NOTICE NOTICE NOTICE NOTICE${NC}\n"
+  printf "\n${LIGHTPURPLE}You MUST edit ${HOME}/.robotAnything/config.json${NC}\n"
+  printf "\n${LIGHTPURPLE}It has been set up with example data that will not work for your robot.${NC}\n"
+fi

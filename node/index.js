@@ -7,6 +7,7 @@ const wait = require('./wait');
 const webserver = require('./webserver');
 const operateServo360 = require('./operateServo360');
 const { robotModel, hardwareFunctions } = require('./robotModel');
+const cloudServerConnect = require('./cloudServerConnect');
 
 const findUsbDevice = async ({
   logName,
@@ -298,6 +299,8 @@ async function main() {
 
   // Start web server
   await webserver.start();
+
+  cloudServerConnect();
 }
 
 if (require.main === module) {

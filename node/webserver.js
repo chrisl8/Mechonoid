@@ -8,8 +8,6 @@ const { robotModel, robotModelEmitter } = require('./robotModel');
 
 const app = express();
 
-const config = { webServerPort: 80 };
-
 // All web content is housed in the website folder
 app.use(express.static(`${__dirname}/../website/build`));
 
@@ -18,8 +16,8 @@ app.use(express.static(`${__dirname}/../website/build`));
 // TODO: Deal with the case of a GET to move in a direction (as opposed to to a location) that is never stopped (timeout?)
 
 async function start() {
-  /** @namespace config.webServerPort */
-  const webServer = app.listen(config.webServerPort);
+  /** @namespace robotModel.webServerPort */
+  const webServer = app.listen(robotModel.webServerPort);
   const io = socketIo(webServer, {
     cors: {
       origin: 'http://localhost:3000',

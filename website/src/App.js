@@ -108,7 +108,7 @@ const App = () => {
             {robotModel.robotName}
             {robotModel.status === 'Robot Offline' && (
               <span>
-                <strong>&nbsp;-&nbsp;OFFLINE!</strong>
+                <strong>The Robot is OFFLINE!</strong>
               </span>
             )}
           </span>
