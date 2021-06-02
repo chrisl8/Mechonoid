@@ -8,6 +8,7 @@ const webserver = require('./webserver');
 const operateServo360 = require('./operateServo360');
 const { robotModel, hardwareFunctions } = require('./robotModel');
 const cloudServerConnect = require('./cloudServerConnect');
+const roboClawDataHandler = require('./roboClawDataHandler');
 
 const findUsbDevice = async ({
   logName,
@@ -49,24 +50,15 @@ async function main() {
     // wait until connection is ready
     hardwareFunctions.maestro.on('ready', () => {
       hardwareFunctions.maestroReady = true;
+      robotModel.hardware.maestroReady = true;
     });
-  }
-
-  function roboClawDataHandler(data) {
-    // TODO: robotmodel may need setters and getters like Arlobot, to facilitate
-    //       taking action when things change.
-    if (typeof data === 'object' && data !== null) {
-      for (const [key, value] of Object.entries(data)) {
-        console.log(`${key}: ${value}`);
-      }
-    } else {
-      console.error('Invalid data from Roboclaw:');
-      console.error(data);
-    }
   }
 
   // Connect to RoboClaw
   if (hardwareFunctions.roboClawDevice) {
+    hardwareFunctions.roboClawReady = true;
+    robotModel.hardware.roboClawReady = true;
+
     hardwareFunctions.roboClaw = new RoboClaw(hardwareFunctions.roboClawDevice);
     await wait(1000);
     hardwareFunctions.roboClaw.send({
@@ -78,8 +70,8 @@ async function main() {
       callback: roboClawDataHandler,
     });
 
+    // This is just for testing the Roboclaw
     /*
-    This is just for testing the Roboclaw
     hardwareFunctions.roboClaw.send({
       command: 'Test',
       callback: roboClawDataHandler,
@@ -91,6 +83,7 @@ async function main() {
       callback: roboClawDataHandler,
     });
     for (let i = 0; i < 5; i++) {
+      // eslint-disable-next-line no-await-in-loop
       await wait(1000);
       hardwareFunctions.roboClaw.send({
         command: 'GETM1SPEED',
@@ -201,8 +194,10 @@ async function main() {
 
   process.on('SIGINT', async () => {
     console.log('Terminating...');
-    operateServo360({ servoName: 'shoulders', value: 0 });
-    operateServo360({ servoName: 'head', value: 0 });
+    if (robotModel.servos && robotModel.servos.length > 0) {
+      operateServo360({ servoName: 'shoulders', value: 0 });
+      operateServo360({ servoName: 'head', value: 0 });
+    }
     await wait(1000);
     pigpio.terminate(); // pigpio C library terminated here
     process.exit(0);
@@ -232,6 +227,7 @@ async function main() {
       }
     }
     if (operations.indexOf('setPositionInteger') > -1) {
+      console.log('setPositionInteger:');
       console.log(location, entry, operations);
       console.log(robotModel.servos[location]);
     }
@@ -293,9 +289,11 @@ async function main() {
     });
   }
 
-  robotModel.gpioPins.forEach((entry) => {
-    handleGpioSwitch(entry);
-  });
+  if (robotModel.gpioPins && robotModel.gpioPins.length > 0) {
+    robotModel.gpioPins.forEach((entry) => {
+      handleGpioSwitch(entry);
+    });
+  }
 
   // Start web server
   await webserver.start();

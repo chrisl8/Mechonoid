@@ -14,7 +14,6 @@ const cloudServerConnect = async () => {
       // No point in adding port 80.
       body.port = robotModel.webServerPort;
     }
-    console.log(body);
     try {
       const result = await fetch(url, {
         method: 'post',

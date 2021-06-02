@@ -2,6 +2,7 @@ const SerialPort = require('serialport');
 const polycrc = require('polycrc');
 
 const wait = require('./wait');
+const robotModel = require('./robotModel');
 
 // eslint-disable-next-line new-cap
 const crc16xmodem = new polycrc.crc(16, 0x1021, 0x0000, 0x0000, false);
@@ -22,9 +23,9 @@ const commandOptions = {
   M2BACKWARD: { command: 5, dataType: 'UInt8' },
   M17BIT: { command: 6 },
   M27BIT: { command: 7 },
-  MIXEDFORWARD: { command: 8 },
-  MIXEDBACKWARD: { command: 9 },
-  MIXEDRIGHT: { command: 10 },
+  MIXEDFORWARD: { command: 8, dataType: 'UInt8' },
+  MIXEDBACKWARD: { command: 9, dataType: 'UInt8' },
+  MIXEDRIGHT: { command: 10, dataType: 'UInt8' },
   MIXEDLEFT: { command: 11 },
   MIXEDFB: { command: 12 },
   MIXEDLR: { command: 13 },
@@ -173,7 +174,8 @@ class RoboClaw {
         Send: [Address, 24]
         Receive: [Value(2 bytes), CRC(2 bytes)]
          */
-        console.log(data.readInt16BE() / 10);
+        robotModel.mainBatteryVoltage = data.readInt16BE() / 10;
+        console.log(robotModel.mainBatteryVoltage);
       } else if (this.currentCommand.command === 'GETVERSION') {
         // This will work on the Firmware version.
         // The last two bytes are a CRC code,

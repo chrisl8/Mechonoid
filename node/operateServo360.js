@@ -1,8 +1,5 @@
+const convertNumberRange = require('./convertNumberRange');
 const { robotModel, hardwareFunctions } = require('./robotModel');
-
-function convertNumberRange(oldValue, oldMin, oldMax, newMin, newMax) {
-  return ((oldValue - oldMin) * (newMax - newMin)) / (oldMax - oldMin) + newMin;
-}
 
 const operateServo360 = ({ servoName, value }) => {
   // Prevent movement when already at full stop.

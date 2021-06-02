@@ -3,7 +3,9 @@ const socketIo = require('socket.io');
 const { debounce } = require('lodash');
 const operateServo = require('./operateServo');
 const operateServo360 = require('./operateServo360');
+const operateMotorSpeed = require('./operateMotorSpeed');
 const sendServoToLocationUsingSwitches = require('./sendServoToLocationUsingSwitches');
+const shutDown = require('./shutDown');
 const { robotModel, robotModelEmitter } = require('./robotModel');
 
 const app = express();
@@ -53,6 +55,15 @@ async function start() {
     res.sendStatus(200);
   });
 
+  // motorSpeed
+  app.get('/motorSpeed/:target/:value', (req, res) => {
+    operateMotorSpeed({
+      motorName: req.params.target,
+      value: req.params.value,
+    });
+    res.sendStatus(200);
+  });
+
   // Socket listeners
   io.on('connection', (socket) => {
     const address = socket.request.connection.remoteAddress;
@@ -80,8 +91,25 @@ async function start() {
       }
     });
 
+    socket.on('motorSpeed', (data) => {
+      if (data && data.target && (data.value === 0 || data.value)) {
+        operateMotorSpeed({ motorName: data.target, value: data.value });
+      }
+    });
+
     socket.on('sendServoToLocation', (data) => {
       sendServoToLocationUsingSwitches(data);
+    });
+
+    // TODO: Send signal to web site that robot is offline before shutting down.
+    // TODO: Maybe combine shutdown and reboot with a flag for reboot.
+    socket.on('reboot', () => {
+      shutDown({ reboot: true });
+    });
+
+    // TODO: Send signal to web site that robot is offline before shutting down.
+    socket.on('shutdown', () => {
+      shutDown();
     });
 
     socket.on('disconnect', () => {

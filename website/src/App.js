@@ -3,9 +3,10 @@ import openSocket from 'socket.io-client';
 import { Layout, Row, Col, Button } from 'antd';
 import './App.css';
 import Headers from './components/Headers';
-import Servos from './components/Servos';
-import Servo360s from './components/Servo360s';
 import ApiDocumentation from './components/ApiDocumentation';
+import OsCommands from './components/OsCommands';
+import ServoController from './components/ServoController';
+import MotorController from './components/MotorController';
 
 const { Header, Content, Footer } = Layout;
 
@@ -16,6 +17,7 @@ const App = () => {
     robotName: 'Robot Anything',
   });
   const [showApi, setShowApi] = useState(false);
+  const [showOsCommands, setShowOsCommands] = useState(false);
 
   useEffect(() => {
     // componentDidMount
@@ -24,6 +26,9 @@ const App = () => {
     let newSocket;
     if (window.location.hostname === 'localhost') {
       // For remote control of Dalek1 when running React from laptop
+      // TODO: This IP shouldn't be on github in prod code,
+      //        but could we get this from the online robotwebservice?
+      //        or just delete this code and go back to manual hacking code when testing.
       newSocket = openSocket(`http://192.168.1.56/`);
     } else {
       // Production
@@ -54,6 +59,22 @@ const App = () => {
     setShowApi(!showApi);
   };
 
+  const handleOsCommandsButton = () => {
+    setShowOsCommands(!showOsCommands);
+  };
+
+  const handleRebootButton = () => {
+    if (socket) {
+      socket.emit('reboot');
+    }
+  };
+
+  const handleShutdownButton = () => {
+    if (socket) {
+      socket.emit('reboot');
+    }
+  };
+
   let pageContent;
 
   if (robotModel.status === 'Online') {
@@ -64,17 +85,43 @@ const App = () => {
           robotModel={robotModel}
         />
       );
+    } else if (showOsCommands) {
+      pageContent = (
+        <OsCommands
+          handleRebootButton={handleRebootButton}
+          handleShutdownButton={handleShutdownButton}
+          handleOsCommandsButton={handleOsCommandsButton}
+        />
+      );
     } else {
       // TODO: Add button to home/center all servos.
       pageContent = (
         <>
+          {robotModel.hardware &&
+            robotModel.motors &&
+            Object.keys(robotModel.motors).length > 0 && (
+              <MotorController
+                socket={socket}
+                motors={robotModel.motors}
+                roboClawReady={robotModel.hardware.roboClawReady}
+              />
+            )}
+          {robotModel.hardware &&
+            robotModel.servos &&
+            Object.keys(robotModel.servos).length > 0 && (
+              <ServoController
+                socket={socket}
+                servos={robotModel.servos}
+                maestroReady={robotModel.hardware.maestroReady}
+              />
+            )}
           <Row>
-            <Servo360s socket={socket} servos={robotModel.servos} />
-          </Row>
-          <Row>
-            <Servos socket={socket} servos={robotModel.servos} />
-          </Row>
-          <Row>
+            {robotModel.mainBatteryVoltage && (
+              <Col style={{ margin: 8 }}>
+                Battery Voltage: {robotModel.mainBatteryVoltage}
+              </Col>
+            )}
+            {/* TODO: Only show this if the robot has lights. */}
             <Col style={{ margin: 8 }}>
               <Button onClick={handleLightsButton}>Lights</Button>
             </Col>
@@ -92,6 +139,7 @@ const App = () => {
               <Button onClick={handleApiDocumentationButton}>
                 API Documentation
               </Button>
+              <Button onClick={handleOsCommandsButton}>OS Commands</Button>
             </Col>
           </Row>
         </>
@@ -108,7 +156,7 @@ const App = () => {
             {robotModel.robotName}
             {robotModel.status === 'Robot Offline' && (
               <span>
-                <strong>The Robot is OFFLINE!</strong>
+                &nbsp;-&nbsp;<strong>The Robot is OFFLINE!</strong>
               </span>
             )}
           </span>
@@ -119,4 +167,5 @@ const App = () => {
     </>
   );
 };
+
 export default App;
