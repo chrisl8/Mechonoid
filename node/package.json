@@ -10,7 +10,6 @@
     "express": "^4.17.1",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.1",
-    "object-observer": "git+https://github.com/chrisl8/object-observer.git",
     "pigpio": "^3.3.0",
     "pololu-maestro": "git+https://github.com/chrisl8/node-pololumaestro.git",
     "polycrc": "^1.0.1",

@@ -1,12 +1,16 @@
 const convertNumberRange = require('./convertNumberRange');
 const roboClawDataHandler = require('./roboClawDataHandler');
-const { robotModel, hardwareFunctions } = require('./robotModel');
+const {
+  robotModel,
+  hardwareFunctions,
+  updateRobotModelData,
+} = require('./robotModel');
 
 const operateMotorSpeed = ({ motorName, value }) => {
   if (
     robotModel.motors &&
     robotModel.motors[motorName] &&
-    hardwareFunctions.roboClawReady
+    robotModel.hardware.roboClawReady
   ) {
     /*
       8 - Drive Forward
@@ -46,13 +50,19 @@ const operateMotorSpeed = ({ motorName, value }) => {
     // Motors only accept positive values. "negative" is accounted for in the command ("reverse" vs. "forward")
     data = Math.abs(data);
 
-    robotModel.motors[motorName].lastValue = value;
+    // TODO: Should we use the lastValue to avoid repeating the same command over and over
+    //       to the roboClaw? Otherwise we can saturate the link, right? Not to mention
+    //       serial data sends take CPU time.
+    //       Test it before changing it, in case there is some possibility of the Roboclaw
+    //       being flaky.
+    updateRobotModelData(`motors.${motorName}.lastValue`, value);
 
     console.log(motorName, value, command, data);
 
     // Mixed Mode will not work until it has a valid "turn" entry as well as drive entry.
     // So just send a "MIXEDRIGHT" 0 to make it happey.
     // TODO: This might be better sent at initialization time?
+    // TODO: Should we mark if/when this is set, and not send it repeatedly?
     hardwareFunctions.roboClaw.send({
       command: 'MIXEDRIGHT',
       data: 0,

@@ -1,5 +1,5 @@
 const operateServo360 = require('./operateServo360');
-const { robotModel } = require('./robotModel');
+const { robotModel, updateRobotModelData } = require('./robotModel');
 
 function sendServoToLocationUsingSwitches(data) {
   console.log(data);
@@ -15,7 +15,7 @@ function sendServoToLocationUsingSwitches(data) {
   const destination = data.value;
 
   if (dataIsValid && !alreadyAtDestination) {
-    robotModel.servos[data.target].stopOnArrival = destination;
+    updateRobotModelData(`servos.${data.target}.stopOnArrival`, destination);
 
     if (destination === 'center') {
       if (

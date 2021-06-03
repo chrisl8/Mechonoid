@@ -1,4 +1,8 @@
-const { robotModel, hardwareFunctions } = require('./robotModel');
+const {
+  robotModel,
+  hardwareFunctions,
+  updateRobotModelData,
+} = require('./robotModel');
 
 function convertNumberRange(oldValue, oldMin, oldMax, newMin, newMax) {
   return ((oldValue - oldMin) * (newMax - newMin)) / (oldMax - oldMin) + newMin;
@@ -16,7 +20,7 @@ const operateServo360 = ({ servoName, value }) => {
   if (
     clearToMove &&
     robotModel.servos[servoName] &&
-    hardwareFunctions.maestroReady
+    robotModel.hardware.maestroReady
   ) {
     let target = robotModel.servos[servoName].off;
     // Servo input from web server for 360 servo is in -1000 to 1000 range, with 0 being off.
@@ -37,7 +41,7 @@ const operateServo360 = ({ servoName, value }) => {
         robotModel.servos[servoName].center,
       );
     }
-    robotModel.servos[servoName].lastValue = value;
+    updateRobotModelData(`servos.${servoName}.lastValue`, value);
     // eslint-disable-next-line no-underscore-dangle
     hardwareFunctions.maestro._sendCommand(
       0x84,

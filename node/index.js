@@ -6,7 +6,11 @@ const RoboClaw = require('./RoboClaw');
 const wait = require('./wait');
 const webserver = require('./webserver');
 const operateServo360 = require('./operateServo360');
-const { robotModel, hardwareFunctions } = require('./robotModel');
+const {
+  robotModel,
+  hardwareFunctions,
+  updateRobotModelData,
+} = require('./robotModel');
 const cloudServerConnect = require('./cloudServerConnect');
 const roboClawDataHandler = require('./roboClawDataHandler');
 
@@ -49,15 +53,13 @@ async function main() {
     //
     // wait until connection is ready
     hardwareFunctions.maestro.on('ready', () => {
-      hardwareFunctions.maestroReady = true;
-      robotModel.hardware.maestroReady = true;
+      updateRobotModelData('hardware.maestroReady', true);
     });
   }
 
   // Connect to RoboClaw
   if (hardwareFunctions.roboClawDevice) {
-    hardwareFunctions.roboClawReady = true;
-    robotModel.hardware.roboClawReady = true;
+    updateRobotModelData('hardware.roboClawReady', true);
 
     hardwareFunctions.roboClaw = new RoboClaw(hardwareFunctions.roboClawDevice);
     await wait(1000);
@@ -211,18 +213,18 @@ async function main() {
       robotModel.servos[location].switchClosed[entry]
     ) {
       if (entry === 'left') {
-        robotModel.servos[location].centerOffset = 'left';
+        updateRobotModelData(`servos.${location}.centerOffset`, 'left');
       } else if (entry === 'right') {
-        robotModel.servos[location].centerOffset = 'right';
+        updateRobotModelData(`servos.${location}.centerOffset`, 'right');
       }
     }
     if (operations.indexOf('setCenterOffset') > -1) {
       if (!robotModel.servos[location].switchClosed[entry]) {
         if (robotModel.servos[location].lastValue > 0) {
-          robotModel.servos[location].centerOffset = 'right';
+          updateRobotModelData(`servos.${location}.centerOffset`, 'right');
         }
         if (robotModel.servos[location].lastValue < 0) {
-          robotModel.servos[location].centerOffset = 'left';
+          updateRobotModelData(`servos.${location}.centerOffset`, 'left');
         }
       }
     }
@@ -240,8 +242,9 @@ async function main() {
       pullUpDown: Gpio.PUD_UP,
       alert: true,
     });
-    robotModel.servos[location].switchClosed[entry] = Boolean(
-      switchPin.digitalRead() === 0,
+    updateRobotModelData(
+      `servos.${location}.switchClosed.${entry}`,
+      Boolean(switchPin.digitalRead() === 0),
     );
 
     // Set initial center offset if available.
@@ -251,7 +254,10 @@ async function main() {
     switchPin.glitchFilter(gpioGlitchFilterInput);
     switchPin.on('alert', (level) => {
       const lastValue = robotModel.servos[location].lastValue; // We might need this later
-      robotModel.servos[location].switchClosed[entry] = Boolean(level === 0);
+      updateRobotModelData(
+        `servos.${location}.switchClosed.${entry}`,
+        Boolean(level === 0),
+      );
       if (operations) {
         if (operations.indexOf('stopIfLessThanZero') > -1) {
           if (robotModel.servos[location].lastValue < 0) {
@@ -270,7 +276,7 @@ async function main() {
         robotModel.servos[location].stopOnArrival === entry
       ) {
         operateServo360({ servoName: location, value: 0 });
-        robotModel.servos[location].stopOnArrival = null;
+        updateRobotModelData(`servos.${location}.stopOnArrival`, null);
       } else if (
         robotModel.servos[location].switchClosed[entry] &&
         robotModel.servos[location].stopOnArrival === 'center'

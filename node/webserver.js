@@ -69,14 +69,17 @@ async function start() {
     const address = socket.request.connection.remoteAddress;
     console.log(`Web connection from ${address}`);
 
-    const emitRobotModel = debounce(() => {
+    // NOTE: This is debounced at 300ms on the sending end.
+    // If that debounce is removed, then be sure to debounce
+    // it here!
+    const emitRobotModelToFrontEnd = () => {
       socket.emit('robotModel', JSON.stringify(robotModel));
-    }, 300);
+    };
 
-    emitRobotModel();
+    emitRobotModelToFrontEnd();
 
     robotModelEmitter.on('update', () => {
-      emitRobotModel();
+      emitRobotModelToFrontEnd();
     });
 
     socket.on('servo360', (data) => {

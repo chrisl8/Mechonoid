@@ -2,7 +2,7 @@ const SerialPort = require('serialport');
 const polycrc = require('polycrc');
 
 const wait = require('./wait');
-const robotModel = require('./robotModel');
+const { updateRobotModelData } = require('./robotModel');
 
 // eslint-disable-next-line new-cap
 const crc16xmodem = new polycrc.crc(16, 0x1021, 0x0000, 0x0000, false);
@@ -174,8 +174,7 @@ class RoboClaw {
         Send: [Address, 24]
         Receive: [Value(2 bytes), CRC(2 bytes)]
          */
-        robotModel.mainBatteryVoltage = data.readInt16BE() / 10;
-        console.log(robotModel.mainBatteryVoltage);
+        updateRobotModelData('mainBatteryVoltage', data.readInt16BE() / 10);
       } else if (this.currentCommand.command === 'GETVERSION') {
         // This will work on the Firmware version.
         // The last two bytes are a CRC code,
