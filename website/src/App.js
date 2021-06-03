@@ -162,7 +162,9 @@ const App = () => {
           </span>
         </Header>
         <Content style={{ margin: '24px 16px 0' }}>{pageContent}</Content>
-        <Footer style={{ textAlign: 'center' }}>Robot Anything</Footer>
+        <Footer style={{ textAlign: 'center' }}>
+          <a href="https://github.com/chrisl8/RobotAnything">Robot Anything</a>
+        </Footer>
       </Layout>
     </>
   );
