@@ -145,14 +145,14 @@ if ! sudo test -e "/root/.robotAnything"; then
 fi
 
 if [[ -f ~/.bashrc ]]; then
-  if ! (grep "${HOME}/${GIT_REPO_AND_FOLDER}" ~/.bashrc >/dev/null); then
+  if ! (grep "${GIT_REPO_AND_FOLDER}" ~/.bashrc >/dev/null); then
     printf "\n${YELLOW}[Adding RobotAnything Scripts folder to your path in .bashrc]${NC}\n"
     sh -c "echo \"export PATH=\\\$PATH:${HOME}/${GIT_REPO_AND_FOLDER}\" >> ~/.bashrc"
   fi
 fi
 
 if [[ -f ~/.zshrc ]]; then
-  if ! (grep "${HOME}/${GIT_REPO_AND_FOLDER}" ~/.zshrc >/dev/null); then
+  if ! (grep "${GIT_REPO_AND_FOLDER}" ~/.zshrc >/dev/null); then
     printf "\n${YELLOW}[Adding RobotAnything Scripts folder to your path in .zshrc]${NC}\n"
     sh -c "echo \"export PATH=\\\$PATH:${HOME}/${GIT_REPO_AND_FOLDER}\" >> ~/.zshrc"
   fi
