@@ -16,6 +16,8 @@ const hardwareFunctions = {
 
 const robotModel = configData;
 
+robotModel.status = 'Online';
+
 robotModel.hardware = {
   maestroReady: null,
   roboClawReady: null,

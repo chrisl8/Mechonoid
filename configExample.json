@@ -1,6 +1,5 @@
 {
   "robotName": "Dalek One",
-  "status": "Online",
   "webServerPort": 80,
   "mainBatteryVoltage": null,
   "cloudServer": {

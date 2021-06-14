@@ -13,7 +13,7 @@ const { Header, Content, Footer } = Layout;
 const App = () => {
   const [socket, setSocket] = useState(null);
   const [robotModel, setRobotModel] = useState({
-    status: 'Robot Offline',
+    status: 'Offline',
     robotName: 'Robot Anything',
   });
   const [showApi, setShowApi] = useState(false);
@@ -41,7 +41,7 @@ const App = () => {
 
     newSocket.on('disconnect', () => {
       setRobotModel({
-        status: 'Robot Offline',
+        status: 'Offline',
       });
     });
 
@@ -154,7 +154,7 @@ const App = () => {
         <Header>
           <span style={{ color: 'rgb(175 38 38 / 85%)', fontSize: '2em' }}>
             {robotModel.robotName}
-            {robotModel.status === 'Robot Offline' && (
+            {robotModel.status === 'Offline' && (
               <span>
                 &nbsp;-&nbsp;<strong>The Robot is OFFLINE!</strong>
               </span>
