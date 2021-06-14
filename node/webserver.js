@@ -1,6 +1,5 @@
 const express = require('express');
 const socketIo = require('socket.io');
-const { debounce } = require('lodash');
 const operateServo = require('./operateServo');
 const operateServo360 = require('./operateServo360');
 const operateMotorSpeed = require('./operateMotorSpeed');
@@ -112,7 +111,7 @@ async function start() {
 
     // TODO: Send signal to web site that robot is offline before shutting down.
     socket.on('shutdown', () => {
-      shutDown();
+      shutDown({ reboot: false });
     });
 
     socket.on('disconnect', () => {

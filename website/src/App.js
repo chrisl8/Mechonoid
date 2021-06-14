@@ -71,7 +71,7 @@ const App = () => {
 
   const handleShutdownButton = () => {
     if (socket) {
-      socket.emit('reboot');
+      socket.emit('shutdown');
     }
   };
 
