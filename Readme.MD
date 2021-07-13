@@ -73,7 +73,10 @@ Initial username/password is ubuntu and ubuntu. It should make you change the pa
 
 ### Change hostname
 
-Edit `/etc/hostname` and then reboot.
+The hostname on the Pi is used for connecting to the web interface.  
+
+I find it to be helpful to change it to something meaningful by  
+editing `/etc/hostname` and then rebooting.
 
 ## RobotAnywhere Install
 There is a script to install everything. Run:
