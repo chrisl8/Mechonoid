@@ -16,6 +16,7 @@ YELLOW='\033[1;33m'
 LIGHT_PURPLE='\033[1;35m'
 NC='\033[0m' # NoColor
 
+printf "\n${YELLOW}[Updating & upgrading all existing Ubuntu packages]${NC}\n"
 sudo apt update
 sudo apt upgrade -y
 
@@ -33,6 +34,8 @@ PACKAGE_TO_INSTALL_LIST+=(build-essential)
 PACKAGE_TO_INSTALL_LIST+=(libraspberrypi-bin)
 #libraspberrypi-bin provides extra commands for working with the Raspberry Pi specifically.
 
+printf "\n${YELLOW}[Installing additional Ubuntu and ROS Packages for RobotAnything]${NC}\n"
+printf "${BLUE}This runs every time, in case new packages were added.${NC}\n"
 sudo apt install -y "${PACKAGE_TO_INSTALL_LIST[@]}"
 
 if ! (command -v pigpiod >/dev/null); then
