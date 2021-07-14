@@ -35,7 +35,7 @@ PACKAGE_TO_INSTALL_LIST+=(libraspberrypi-bin)
 
 sudo apt install -y "${PACKAGE_TO_INSTALL_LIST[@]}"
 
-if ! (command -v pigpiod -v >/dev/null); then
+if ! (command -v pigpiod >/dev/null); then
   printf "\n${YELLOW}[Installing pigpio for GPIO pin access]${NC}\n"
   cd
   wget https://github.com/joan2937/pigpio/archive/master.zip
@@ -46,6 +46,20 @@ if ! (command -v pigpiod -v >/dev/null); then
   sudo make install
   cd
   sudo rm -rf pigpio-master
+fi
+
+if ! (command -v jrk2cmd >/dev/null); then
+  # TODO: This should maybe be optional?
+  printf "\n${YELLOW}[Installing jrk2cmd for Pololu Jrk Motor Controller interaction]${NC}\n"
+  cd
+  wget https://www.pololu.com/file/0J1501/pololu-jrk-g2-1.4.0-linux-rpi.tar.xz
+  tar xvf pololu-jrk-g2-1.4.0-linux-rpi.tar.xz
+  rm pololu-jrk-g2-1.4.0-linux-rpi.tar.xz
+  cd pololu-jrk-g2-1.4.0-linux-rpi/
+  sudo ./install.sh
+  cd
+  rm -rf pololu-jrk-g2-1.4.0-linux-rpi
+  printf "${PURPLE}Jrk Motor Controller interaction will probably not work until after you reboot${NC}\n"
 fi
 
 printf "\n${YELLOW}[Cloning or Updating git repositories]${NC}\n"
