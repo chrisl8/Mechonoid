@@ -1,7 +1,7 @@
 const PololuMaestro = require('pololu-maestro');
 const pigpio = require('pigpio');
 const Gpio = require('pigpio').Gpio;
-const UsbDevice = require('./UsbDevice');
+const findUsbDevice = require('./findUsbDevice');
 const RoboClaw = require('./RoboClaw');
 const wait = require('./wait');
 const webserver = require('./webserver');
@@ -13,22 +13,6 @@ const {
 } = require('./robotModel');
 const cloudServerConnect = require('./cloudServerConnect');
 const roboClawDataHandler = require('./roboClawDataHandler');
-
-const findUsbDevice = async ({
-  logName,
-  uniqueDeviceString,
-  stringLocation,
-}) => {
-  console.log(`Finding ${logName}...`);
-  const usbDevice = new UsbDevice(uniqueDeviceString, stringLocation);
-  let usbDeviceName;
-  try {
-    usbDeviceName = await usbDevice.findDeviceName();
-  } catch (e) {
-    console.error(`Failed to find ${logName}.`);
-  }
-  return usbDeviceName;
-};
 
 async function main() {
   // Get USB Device names
