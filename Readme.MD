@@ -8,9 +8,12 @@ This really isn't ready for public consumption yet.
 
 This is intended to run on a Raspberry Pi 4 running **Ubuntu**.  I use the 4GB model, but you can try others at your own risk. 
 
-Put a fresh copy of Ubuntu 20.04 LTS on your robot's Raspberry Pi then run the installation script below.
+TL;DR: Put a fresh copy of Ubuntu 20.04 LTS on your robot's Raspberry Pi then run the installation script below. Follow the steps below:
 
-See: https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#1-overview for instructions.
+### Instal Ubuntu
+See: https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#1-overview for full instructions.
+ 
+Summary:
 
 - Install and launch the Raspberry Pi OS Imager
     - For Linux it goes like this:
@@ -41,21 +44,21 @@ To do so, uncomment (remove the “#” at the beginning) and edit the following
 
     wifis:
       wlan0:
-      dhcp4: true
-      optional: true
-      access-points:
-        <wifi network name>:
-          password: "<wifi password>"
+        dhcp4: true
+        optional: true
+        access-points:
+          <wifi network name>:
+            password: "<wifi password>"
 
 For example:
 
     wifis:
       wlan0:
-      dhcp4: true
-      optional: true
-      access-points:
-        "home network":
-          password: "123456789"
+        dhcp4: true
+        optional: true
+        access-points:
+          "home network":
+            password: "123456789"
 > Note: network name **must** be enclosed in quotation marks, even though the example does not demonstrate this.
 
 Save the file and extract the card from your laptop.
