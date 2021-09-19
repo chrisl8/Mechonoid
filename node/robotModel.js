@@ -12,6 +12,7 @@ const hardwareFunctions = {
   roboClaw: null,
   maestroBoard: null,
   maestro: null,
+  jrkMotorControllerList: [],
 };
 
 const robotModel = configData;
