@@ -112,7 +112,7 @@ const App = () => {
               <ServoController
                 socket={socket}
                 servos={robotModel.servos}
-                maestroReady={robotModel.hardware.maestroReady}
+                hardware={robotModel.hardware}
               />
             )}
           <Row>

@@ -15,31 +15,25 @@ const cloudServerConnect = require('./cloudServerConnect');
 const roboClawDataHandler = require('./roboClawDataHandler');
 
 async function main() {
-  // Get USB Device names
-  hardwareFunctions.maestroBoard = await findUsbDevice({
-    logName: 'Maestro Board',
-    uniqueDeviceString: 'Pololu_Mini_Maestro_18-Channel_USB_Servo_Controller',
-    stringLocation: 'ID_MODEL',
-  });
-  hardwareFunctions.roboClawDevice = await findUsbDevice({
-    logName: 'RoboClaw',
-    stringLocation: 'ID_MODEL',
-    uniqueDeviceString: 'USB_Roboclaw_2x15A',
-  });
+  // Get USB Device names for all hardware controllers
+  for (const [key, value] of Object.entries(hardwareFunctions)) {
+    if (value.type && (value.type === 'RoboClaw' || value.type === 'Maestro')) {
+      // eslint-disable-next-line no-await-in-loop
+      value.device = await findUsbDevice({ ...value });
 
-  // Connect to Maestro Board
-  if (hardwareFunctions.maestroBoard) {
-    hardwareFunctions.maestro = new PololuMaestro(
-      hardwareFunctions.maestroBoard,
-      115200,
-      false,
-    );
-    //
-    // wait until connection is ready
-    hardwareFunctions.maestro.on('ready', () => {
-      updateRobotModelData('hardware.maestroReady', true);
-    });
+      // Connect to Maestro Board
+      if (value.type === 'Maestro' && value.device) {
+        value.connection = new PololuMaestro(value.device, 115200, false);
+
+        // wait until connection is ready
+        value.connection.on('ready', () => {
+          updateRobotModelData(`hardware.${key}`, true);
+        });
+      }
+    }
   }
+
+  // TODO: Poll Raspberry Pi throttle notice, and anything else that it can tell us, via some polling mechanism and display it on the web interface.
 
   // Connect to RoboClaw
   if (hardwareFunctions.roboClawDevice) {

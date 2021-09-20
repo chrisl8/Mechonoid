@@ -1,7 +1,6 @@
 {
   "robotName": "Dumb Idea One",
   "webServerPort": 80,
-  "mainBatteryVoltage": null,
   "cloudServer": {
     "exists": false,
     "address": "https://robots.example.com/",

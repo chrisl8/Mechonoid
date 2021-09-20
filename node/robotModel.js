@@ -7,22 +7,14 @@ const configData = require('./configData');
 
 // The hardware functions don't work inside of the Observable system,
 // and they don't need to update the web site anyway.
-const hardwareFunctions = {
-  roboClawDevice: null,
-  roboClaw: null,
-  maestroBoard: null,
-  maestro: null,
-  jrkMotorControllerList: [],
-};
+const hardwareFunctions = { ...configData.hardwareControllers };
 
-const robotModel = configData;
+const robotModel = { ...configData };
 
 robotModel.status = 'Online';
+robotModel.mainBatteryVoltage = null;
 
-robotModel.hardware = {
-  maestroReady: null,
-  roboClawReady: null,
-};
+robotModel.hardware = {};
 
 const robotModelEmitter = new EventEmitter();
 

@@ -1,14 +1,28 @@
 {
   "robotName": "Dalek One",
   "webServerPort": 80,
-  "mainBatteryVoltage": null,
   "cloudServer": {
     "exists": false,
     "address": "https://robots.example.com/",
     "password": "superSecret1234"
   },
+  "hardwareControllers": {
+    "roboClawOne": {
+      "type": "RoboClaw",
+      "logName": "RoboClaw",
+      "stringLocation": "ID_MODEL",
+      "uniqueDeviceString": "USB_Roboclaw_2x15A"
+    },
+    "maestroBoardOne": {
+      "type": "Maestro",
+      "logName": "Maestro Board",
+      "uniqueDeviceString": "Pololu_Mini_Maestro_18-Channel_USB_Servo_Controller",
+      "stringLocation": "ID_MODEL"
+    }
+    },
   "servos": {
     "eyeStalk": {
+      "hardwareController": "maestroBoardOne",
       "channel": 0,
       "type": 180,
       "minimum": 2000,
@@ -18,6 +32,7 @@
       "lastValue": 0
     },
     "leftArmVertical": {
+      "hardwareController": "maestroBoardOne",
       "channel": 3,
       "type": 180,
       "minimum": 2000,
@@ -28,6 +43,7 @@
       "vertical": true
     },
     "leftArmHorizontal": {
+      "hardwareController": "maestroBoardOne",
       "channel": 4,
       "type": 180,
       "minimum": 2000,
@@ -37,6 +53,7 @@
       "lastValue": 0
     },
     "rightArmVertical": {
+      "hardwareController": "maestroBoardOne",
       "channel": 5,
       "type": 180,
       "minimum": 2000,
@@ -46,6 +63,7 @@
       "lastValue": 0
     },
     "rightArmHorizontal": {
+      "hardwareController": "maestroBoardOne",
       "channel": 6,
       "type": 180,
       "minimum": 2000,
@@ -56,6 +74,7 @@
     },
     "head": {
       "trulyContinuous": true,
+      "hardwareController": "maestroBoardOne",
       "channel": 1,
       "type": 360,
       "minimum": 3200,
@@ -73,6 +92,7 @@
       "stopOnArrival": null
     },
     "shoulders": {
+      "hardwareController": "maestroBoardOne",
       "channel": 2,
       "type": 360,
       "minimum": 3200,

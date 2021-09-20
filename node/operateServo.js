@@ -8,7 +8,7 @@ function convertNumberRange(oldValue, oldMin, oldMax, newMin, newMax) {
   return ((oldValue - oldMin) * (newMax - newMin)) / (oldMax - oldMin) + newMin;
 }
 
-const operateServo360 = ({ servoName, value }) => {
+const operateServo = ({ servoName, value }) => {
   // Prevent movement when already at full stop.
   const clearToMove = Boolean(
     value === 0 ||
@@ -20,7 +20,7 @@ const operateServo360 = ({ servoName, value }) => {
   if (
     clearToMove &&
     robotModel.servos[servoName] &&
-    robotModel.hardware.maestroReady
+    robotModel.hardware[robotModel.servos[servoName].hardwareController]
   ) {
     let target = robotModel.servos[servoName].off;
     // Servo input from web server for 360 servo is in -1000 to 1000 range, with 0 being off.
@@ -43,7 +43,9 @@ const operateServo360 = ({ servoName, value }) => {
     }
     updateRobotModelData(`servos.${servoName}.lastValue`, value);
     // eslint-disable-next-line no-underscore-dangle
-    hardwareFunctions.maestro._sendCommand(
+    hardwareFunctions[
+      robotModel.servos[servoName].hardwareController
+    ].connection._sendCommand(
       0x84,
       robotModel.servos[servoName].channel,
       target,
@@ -51,4 +53,4 @@ const operateServo360 = ({ servoName, value }) => {
   }
 };
 
-module.exports = operateServo360;
+module.exports = operateServo;

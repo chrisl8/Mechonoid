@@ -102,5 +102,7 @@ You must edit this file to describe your robot.
 
 A rather complex example has been placed there to give a hint as to how to make it work.
 
+Other examples can be found with the names `configExample*.json`
+
 ## Attributions
 Dalek Icon by Tatyana Kyul from the Noun Project
