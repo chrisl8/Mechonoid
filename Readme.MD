@@ -8,9 +8,11 @@ This really isn't ready for public consumption yet.
 
 This is intended to run on a Raspberry Pi 4 running **Ubuntu**.  I use the 4GB model, but you can try others at your own risk. 
 
-TL;DR: Put a fresh copy of Ubuntu 20.04 LTS on your robot's Raspberry Pi then run the installation script below. Follow the steps below:
+TL;DR: Put a fresh copy of Ubuntu 20.04 LTS on your robot's Raspberry Pi then run the installation script.
 
-### Instal Ubuntu
+Follow the steps below:
+
+### Install Ubuntu
 See: https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#1-overview for full instructions.
  
 Summary:
@@ -24,7 +26,7 @@ Summary:
 - Pick
   - Other general purpose OS
     - Ubuntu
-      - Ubuntu Server 20.04.2 LTS 64-bit
+      - Ubuntu Server 20.04.3 LTS 64-bit
         - This is the one with no desktop, because we don’t need that.
     
 ### Enable WiFi for headless boot
@@ -69,6 +71,17 @@ Save the file and extract the card from your laptop.
 > A. Once it seems done, pull the power cable and plug it in again, and it should connect this time.  
 > or  
 > B. Connect an Ethernet cable to use to connect to it after the first boot, SSH to it, and reboot it right away to make WiFi work.
+
+MY experience is that the way to reliably get the OS to work consitently and connect to Wifi is to  
+connect a keyboard and monitor (to HDMI 0, not 1),
+let it finish booting,
+leave it alone for five or ten minutes to make sure it is done,
+(Note: It actually creates the ubuntu account during the first boot, so it is possible to try logging in before he account exists, which won't work)
+log in as ubuntu/ubunut,
+change your pasword as required,
+and reboot.
+
+Trying to just unplug it and plug it in and get it on Wifi seems to only work sometimes.
 
 ### Log in
 
