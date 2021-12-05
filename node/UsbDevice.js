@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
-const spawn = require('child_process').spawn;
-const fs = require('fs');
+import { spawn } from 'child_process';
+import fs from 'fs';
+import esMain from 'es-main';
 
 class UsbDevice {
   constructor(uniqueDeviceString, stringLocation) {
@@ -107,8 +108,9 @@ class UsbDevice {
   }
 }
 
-module.exports = UsbDevice;
-if (require.main === module) {
+export default UsbDevice;
+
+if (esMain(import.meta)) {
   // Run the function if this is called directly instead of required.
   if (process.argv.length < 4) {
     console.log('You must provide a string to search for,');

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Slider } from 'antd';
+import fancyName from '../utils/FancyName';
 
 const MotorSpeed = (props) => {
   const [disabled] = useState(false);
@@ -8,22 +9,22 @@ const MotorSpeed = (props) => {
   const handleSliderChange = (value) => {
     setSetting(value);
     if (props.socket) {
-      props.socket.emit('motorSpeed', { target: props.name, value });
+      props.socket.emit('motor', { target: props.name, value });
     }
   };
 
   const handleSliderAfterChange = () => {
     setSetting(0);
     if (props.socket) {
-      props.socket.emit('motorSpeed', { target: props.name, value: 0 });
+      props.socket.emit('motor', { target: props.name, value: 0 });
     }
   };
 
   return (
     <Card
       size="small"
-      title="Dual Motors"
-      extra={props.name.charAt(0).toUpperCase() + props.name.slice(1)}
+      title={props.channel === 'dual' ? 'Dual Motors' : 'Motor'}
+      extra={fancyName(props.name)}
       style={{ width: 300 }}
     >
       <Slider

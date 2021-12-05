@@ -67,6 +67,8 @@ const ApiDocumentation = (props) => {
     }
   }
 
+  // TODO: Sending 0 to the shoulders does NOT stop them!
+
   return (
     <>
       <h1>These are the direct HTTP GET requests that you can send</h1>

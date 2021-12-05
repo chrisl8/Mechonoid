@@ -11,4 +11,4 @@ async function wait(milliseconds) {
   });
 }
 
-module.exports = wait;
+export default wait;

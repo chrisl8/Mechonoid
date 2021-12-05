@@ -1,4 +1,4 @@
-const { Transform } = require('stream');
+import { Transform } from 'stream';
 
 /**
  * This is a copy of
@@ -96,4 +96,4 @@ class DelimiterPlusByteLengthParser extends Transform {
   }
 }
 
-module.exports = DelimiterPlusByteLengthParser;
+export default DelimiterPlusByteLengthParser;

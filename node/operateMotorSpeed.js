@@ -1,10 +1,10 @@
-const convertNumberRange = require('./convertNumberRange');
-const roboClawDataHandler = require('./roboClawDataHandler');
-const {
+import convertNumberRange from './convertNumberRange.js';
+import roboClawDataHandler from './roboClawDataHandler.js';
+import {
   robotModel,
   hardwareFunctions,
   updateRobotModelData,
-} = require('./robotModel');
+} from './robotModel.js';
 
 const operateMotorSpeed = ({ motorName, value }) => {
   if (
@@ -60,7 +60,7 @@ const operateMotorSpeed = ({ motorName, value }) => {
     console.log(motorName, value, command, data);
 
     // Mixed Mode will not work until it has a valid "turn" entry as well as drive entry.
-    // So just send a "MIXEDRIGHT" 0 to make it happey.
+    // So just send a "MIXEDRIGHT" 0 to make it happy.
     // TODO: This might be better sent at initialization time?
     // TODO: Should we mark if/when this is set, and not send it repeatedly?
     hardwareFunctions.roboClaw.send({
@@ -77,4 +77,4 @@ const operateMotorSpeed = ({ motorName, value }) => {
   }
 };
 
-module.exports = operateMotorSpeed;
+export default operateMotorSpeed;

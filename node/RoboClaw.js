@@ -1,8 +1,7 @@
-const SerialPort = require('serialport');
-const polycrc = require('polycrc');
+import SerialPort from 'serialport';
+import polycrc from 'polycrc';
 
-const wait = require('./wait');
-const { updateRobotModelData } = require('./robotModel');
+import wait from './wait.js';
 
 // eslint-disable-next-line new-cap
 const crc16xmodem = new polycrc.crc(16, 0x1021, 0x0000, 0x0000, false);
@@ -15,18 +14,18 @@ const crc16xmodem = new polycrc.crc(16, 0x1021, 0x0000, 0x0000, false);
 
 // From https://github.com/basicmicro/raspberry_pi_packet_serial/blob/master/roboclaw.py
 const commandOptions = {
-  M1FORWARD: { command: 0, dataType: 'UInt8' },
-  M1BACKWARD: { command: 1, dataType: 'UInt8' },
+  M1FORWARD: { command: 0, dataTypes: ['UInt8'] },
+  M1BACKWARD: { command: 1, dataTypes: ['UInt8'] },
   SETMINMB: { command: 2 },
   SETMAXMB: { command: 3 },
-  M2FORWARD: { command: 4, dataType: 'UInt8' },
-  M2BACKWARD: { command: 5, dataType: 'UInt8' },
+  M2FORWARD: { command: 4, dataTypes: ['UInt8'] },
+  M2BACKWARD: { command: 5, dataTypes: ['UInt8'] },
   M17BIT: { command: 6 },
   M27BIT: { command: 7 },
-  MIXEDFORWARD: { command: 8, dataType: 'UInt8' },
-  MIXEDBACKWARD: { command: 9, dataType: 'UInt8' },
-  MIXEDRIGHT: { command: 10, dataType: 'UInt8' },
-  MIXEDLEFT: { command: 11 },
+  MIXEDFORWARD: { command: 8, dataTypes: ['UInt8'] },
+  MIXEDBACKWARD: { command: 9, dataTypes: ['UInt8'] },
+  MIXEDRIGHT: { command: 10, dataTypes: ['UInt8'] },
+  MIXEDLEFT: { command: 11, dataTypes: ['UInt8'] },
   MIXEDFB: { command: 12 },
   MIXEDLR: { command: 13 },
   GETM1ENC: { command: 16 },
@@ -35,8 +34,8 @@ const commandOptions = {
   GETM2SPEED: { command: 19 },
   RESETENC: { command: 20 },
   GETVERSION: { command: 21 },
-  SETM1ENCCOUNT: { command: 22, dataType: 'UInt16BE' },
-  SETM2ENCCOUNT: { command: 23, dataType: 'UInt16BE' },
+  SETM1ENCCOUNT: { command: 22, dataTypes: ['UInt16BE'] },
+  SETM2ENCCOUNT: { command: 23, dataTypes: ['UInt16BE'] },
   GETMBATT: { command: 24 },
   GETLBATT: { command: 25 },
   SETMINLB: { command: 26 },
@@ -50,10 +49,13 @@ const commandOptions = {
   MIXEDDUTY: { command: 34 },
   M1SPEED: { command: 35 },
   M2SPEED: { command: 36 },
-  MIXEDSPEED: { command: 37 },
-  M1SPEEDACCEL: { command: 38 },
-  M2SPEEDACCEL: { command: 39 },
-  MIXEDSPEEDACCEL: { command: 40 },
+  MIXEDSPEED: { command: 37, dataTypes: ['Int32BE', 'Int32BE'] },
+  M1SPEEDACCEL: { command: 38, dataTypes: ['Int32BE', 'Int32BE'] },
+  M2SPEEDACCEL: { command: 39, dataTypes: ['Int32BE', 'Int32BE'] },
+  MIXEDSPEEDACCEL: {
+    command: 40,
+    dataTypes: ['Int32BE', 'Int32BE', 'Int32BE'],
+  },
   M1SPEEDDIST: { command: 41 },
   M2SPEEDDIST: { command: 42 },
   MIXEDSPEEDDIST: { command: 43 },
@@ -70,7 +72,7 @@ const commandOptions = {
   MIXEDDUTYACCEL: { command: 54 },
   READM1PID: { command: 55 },
   READM2PID: { command: 56 },
-  SETMAINVOLTAGES: { command: 57 },
+  SETMAINVOLTAGES: { command: 57, dataTypes: ['UInt16BE', 'UInt16BE'] },
   SETLOGICVOLTAGES: { command: 58 },
   GETMINMAXMAINVOLTAGES: { command: 59 },
   GETMINMAXLOGICVOLTAGES: { command: 60 },
@@ -108,7 +110,7 @@ const commandOptions = {
 };
 
 class RoboClaw {
-  constructor(comPort) {
+  constructor({ comPort, myName = 'RoboClaw' }) {
     this.busy = false;
     this.stack = [];
     this.currentCommand = {};
@@ -174,7 +176,56 @@ class RoboClaw {
         Send: [Address, 24]
         Receive: [Value(2 bytes), CRC(2 bytes)]
          */
-        updateRobotModelData('mainBatteryVoltage', data.readInt16BE() / 10);
+        if (this.currentCommand.callback) {
+          this.currentCommand.callback({
+            myName,
+            batteryVoltage: data.readInt16BE() / 10,
+          });
+        }
+      } else if (this.currentCommand.command === 'GETTEMP') {
+        // This will decode the main battery voltage
+        /*
+        24 - Read Main Battery Voltage Level
+        Read the main battery voltage level connected to B+ and B- terminals. The voltage is returned in
+        10ths of a volt(eg 300 = 30v).
+        Send: [Address, 24]
+        Receive: [Value(2 bytes), CRC(2 bytes)]
+         */
+        if (this.currentCommand.callback) {
+          this.currentCommand.callback({
+            myName,
+            temperature: data.readInt16BE() / 10,
+          });
+        }
+      } else if (this.currentCommand.command === 'GETTEMP2') {
+        // This will decode the main battery voltage
+        /*
+        24 - Read Main Battery Voltage Level
+        Read the main battery voltage level connected to B+ and B- terminals. The voltage is returned in
+        10ths of a volt(eg 300 = 30v).
+        Send: [Address, 24]
+        Receive: [Value(2 bytes), CRC(2 bytes)]
+         */
+        if (this.currentCommand.callback) {
+          this.currentCommand.callback({
+            myName,
+            temperature2: data.readInt16BE() / 10,
+          });
+        }
+      } else if (this.currentCommand.command === 'GETMINMAXMAINVOLTAGES') {
+        /*
+        59 - Read Main Battery Voltage Settings
+        Read the Main Battery Voltage Settings. The voltage is calculated by dividing the value by 10
+        Send: [Address, 59]
+        Receive: [Min(2 bytes), Max(2 bytes), CRC(2 bytes)]
+         */
+        if (this.currentCommand.callback) {
+          this.currentCommand.callback({
+            myName,
+            minimumVoltage: data.readInt16BE() / 10,
+            maximumVoltage: data.readInt16BE(2) / 10,
+          });
+        }
       } else if (this.currentCommand.command === 'GETVERSION') {
         // This will work on the Firmware version.
         // The last two bytes are a CRC code,
@@ -182,13 +233,48 @@ class RoboClaw {
         // and a null character.
         // Send: [Address, 21]
         // Receive: [“RoboClaw 10.2A v4.1.11”,10,0, CRC(2 bytes)]
-        console.log(data.toString('utf8', 0, data.length - 3)); // Version Text
+        if (this.currentCommand.callback) {
+          this.currentCommand.callback({
+            myName,
+            version: data.toString('utf8', 0, data.length - 3),
+          });
+        }
       } else if (this.currentCommand.command === 'GETM1SPEED') {
         console.log(
           data.readUInt8(4) === 0 ? 'Forward: ' : 'Reverse: ',
           data.readInt32BE(),
         );
         // console.log(data.subarray(0, data.length - 2));
+      } else if (
+        this.currentCommand.command === 'READM1PID' ||
+        this.currentCommand.command === 'READM2PID'
+      ) {
+        // This should be the PID values set and saved via the RoboClaw application
+        /*
+          55 - Read Motor 1 Velocity PID and QPPS Settings
+          Read the PID and QPPS Settings.
+          Send: [Address, 55]
+          Receive: [P(4 bytes), I(4 bytes), D(4 bytes), QPPS(4 byte), CRC(2 bytes)]
+          56 - Read Motor 2 Velocity PID and QPPS Settings
+          Read the PID and QPPS Settings.
+          Send: [Address, 56]
+          Receive: [P(4 bytes), I(4 bytes), D(4 bytes), QPPS(4 byte), CRC(2 bytes)]
+
+          Velocity P Proportional setting for PID.
+          Velocity I Integral setting for PID.
+          Velocity D Differential setting for PID.
+          QPPS Maximum speed of motor using encoder counts per second.
+            QPPS = "Quad Pulses Per Second", which is also what command 37 uses for speed control in full "differential" drive from "joystick" input,
+            so this is what we use for
+         */
+        // TODO: Save this for use later in code and web site for "max speed" on inputs that go to twist.
+        console.log(
+          this.currentCommand.command,
+          data.readInt32BE(),
+          data.readInt32BE(4),
+          data.readInt32BE(8),
+          data.readInt32BE(12),
+        );
       } else if (this.currentCommand.command === 'GETM1ENC') {
         console.log('GETM1ENC');
         /*
@@ -283,16 +369,44 @@ class RoboClaw {
     } else if (this.stack.length > 0) {
       this.busy = true;
       this.currentCommand = this.stack.shift();
+
+      // Allocate buffer for commands
       let commandBufferLength = 2;
       if (this.currentCommand.data || this.currentCommand.data === 0) {
-        if (commandOptions[this.currentCommand.command].dataType === 'UInt8') {
-          commandBufferLength = 3;
-        } else if (
-          commandOptions[this.currentCommand.command].dataType === 'UInt16BE'
+        let dataTypesFound = false;
+        if (
+          commandOptions[this.currentCommand.command].dataTypes &&
+          commandOptions[this.currentCommand.command].dataTypes.constructor ===
+            Array
         ) {
-          commandBufferLength = 6;
-        } else {
-          console.error('Unknown data type for command:');
+          dataTypesFound = true;
+          for (
+            let i = 0;
+            i < commandOptions[this.currentCommand.command].dataTypes.length;
+            i++
+          ) {
+            if (
+              commandOptions[this.currentCommand.command].dataTypes[i] ===
+              'UInt8'
+            ) {
+              commandBufferLength += 1;
+            } else if (
+              commandOptions[this.currentCommand.command].dataTypes[i] ===
+              'UInt16BE'
+            ) {
+              commandBufferLength += 2;
+            } else if (
+              commandOptions[this.currentCommand.command].dataTypes[i] ===
+              'Int32BE'
+            ) {
+              commandBufferLength += 4;
+            } else {
+              dataTypesFound = false;
+            }
+          }
+        }
+        if (!dataTypesFound) {
+          console.error('Unknown data type for command (buffer allocation):');
           console.error(commandOptions[this.currentCommand.command]);
           // Fail: Clear busy, run again and return.
           this.busy = false;
@@ -301,31 +415,72 @@ class RoboClaw {
         }
       }
       const commandBuffer = Buffer.alloc(commandBufferLength);
+
+      // Fill command buffer WITH data
+      let offset = 1;
       commandBuffer.writeUInt8(this.address);
       commandBuffer.writeUInt8(
         commandOptions[this.currentCommand.command].command,
-        1,
+        offset,
       );
+      offset++;
       if (this.currentCommand.data || this.currentCommand.data === 0) {
-        // Commands that include data also need to include a checksum.
-        if (commandOptions[this.currentCommand.command].dataType === 'UInt8') {
-          commandBuffer.writeUInt8(this.currentCommand.data, 2);
-        } else if (
-          commandOptions[this.currentCommand.command].dataType === 'UInt16BE'
+        let dataTypesFound = false;
+        if (
+          commandOptions[this.currentCommand.command].dataTypes &&
+          commandOptions[this.currentCommand.command].dataTypes.constructor ===
+            Array
         ) {
-          commandBuffer.writeUInt16BE(this.currentCommand.data, 2);
-        } else {
-          console.error('Unknown data type for command:');
+          dataTypesFound = true;
+          for (
+            let i = 0;
+            i < commandOptions[this.currentCommand.command].dataTypes.length;
+            i++
+          ) {
+            let data = this.currentCommand.data;
+            if (this.currentCommand.data.constructor === Array) {
+              data = this.currentCommand.data[i];
+            }
+            if (
+              commandOptions[this.currentCommand.command].dataTypes[i] ===
+              'UInt8'
+            ) {
+              commandBuffer.writeUInt8(data, offset);
+              offset += 1;
+            } else if (
+              commandOptions[this.currentCommand.command].dataTypes[i] ===
+              'UInt16BE'
+            ) {
+              commandBuffer.writeUInt16BE(data, offset);
+              offset += 2;
+            } else if (
+              commandOptions[this.currentCommand.command].dataTypes[i] ===
+              'Int32BE'
+            ) {
+              console.log(this.currentCommand);
+              commandBuffer.writeInt32BE(data, offset);
+              offset += 4;
+            } else {
+              dataTypesFound = false;
+            }
+          }
+        }
+        if (!dataTypesFound) {
+          console.error('Unknown data type for command (buffer data fill):');
           console.error(commandOptions[this.currentCommand.command]);
           // Fail: Clear busy, run again and return.
           this.busy = false;
           this.popAndSendCommands();
           return;
         }
+
+        // Calculate and add CRC checksum
+        // NOTE: This is ONLY done if there is no data payload
         const checksum = crc16xmodem(commandBuffer);
         const checksumBuffer = Buffer.alloc(2);
         checksumBuffer.writeUInt16BE(checksum);
         const bufferToSend = Buffer.concat([commandBuffer, checksumBuffer]);
+        console.log(bufferToSend);
         this.serialPort.write(bufferToSend);
       } else {
         this.serialPort.write(commandBuffer);
@@ -341,4 +496,4 @@ class RoboClaw {
   // }
 }
 
-module.exports = RoboClaw;
+export default RoboClaw;

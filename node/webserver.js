@@ -1,25 +1,39 @@
-const express = require('express');
-const socketIo = require('socket.io');
-const operateServo = require('./operateServo');
-const operateServo360 = require('./operateServo360');
-const operateMotorSpeed = require('./operateMotorSpeed');
-const sendServoToLocationUsingSwitches = require('./sendServoToLocationUsingSwitches');
-const shutDown = require('./shutDown');
-const { robotModel, robotModelEmitter } = require('./robotModel');
+import express from 'express';
+import { Server } from 'socket.io';
+// https://stackoverflow.com/a/64383997/4982408
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import operateServo from './operateServo.js';
+import operateServo360 from './operateServo360.js';
+import operateMotor from './operateMotor.js';
+import sendServoToLocationUsingSwitches from './sendServoToLocationUsingSwitches.js';
+import shutDown from './shutDown.js';
+import { robotModel, robotModelEmitter } from './robotModel.js';
+
+// https://stackoverflow.com/a/64383997/4982408
+const fileName = fileURLToPath(import.meta.url);
+const dirName = dirname(fileName);
 
 const app = express();
 
 // All web content is housed in the website folder
-app.use(express.static(`${__dirname}/../website/build`));
+app.use(express.static(`${dirName}/../website/build`));
 
 // TODO: Track if a move command HAS come in from a client, has not been zeroed, and they disconnect, so we can stop it.
 
 // TODO: Deal with the case of a GET to move in a direction (as opposed to to a location) that is never stopped (timeout?)
 
-async function start() {
+function strippedRobotModel(inputRobotModel) {
+  const copy = { ...inputRobotModel };
+  // Use this to strip out anything the front end shouldn't see.
+  delete copy.cloudServer;
+  return copy;
+}
+
+async function webserver() {
   /** @namespace robotModel.webServerPort */
   const webServer = app.listen(robotModel.webServerPort);
-  const io = socketIo(webServer, {
+  const io = new Server(webServer, {
     cors: {
       origin: 'http://localhost:3000',
       methods: ['GET', 'POST'],
@@ -28,7 +42,7 @@ async function start() {
 
   // HTTP GET Listeners
   app.get('/model', (req, res) => {
-    res.json(robotModel);
+    res.json(strippedRobotModel(robotModel));
   });
 
   app.get('/sendServoToLocation/:target/:value', (req, res) => {
@@ -54,9 +68,9 @@ async function start() {
     res.sendStatus(200);
   });
 
-  // motorSpeed
-  app.get('/motorSpeed/:target/:value', (req, res) => {
-    operateMotorSpeed({
+  // motor
+  app.get('/motor/:target/:value', (req, res) => {
+    operateMotor({
       motorName: req.params.target,
       value: req.params.value,
     });
@@ -72,7 +86,7 @@ async function start() {
     // If that debounce is removed, then be sure to debounce
     // it here!
     const emitRobotModelToFrontEnd = () => {
-      socket.emit('robotModel', JSON.stringify(robotModel));
+      socket.emit('robotModel', JSON.stringify(strippedRobotModel(robotModel)));
     };
 
     emitRobotModelToFrontEnd();
@@ -93,9 +107,18 @@ async function start() {
       }
     });
 
-    socket.on('motorSpeed', (data) => {
+    socket.on('motor', (data) => {
+      console.log(data);
       if (data && data.target && (data.value === 0 || data.value)) {
-        operateMotorSpeed({ motorName: data.target, value: data.value });
+        operateMotor({
+          motorName: data.target,
+          value: data.value,
+        });
+      } else if (data && data.twist && typeof data.twist === 'object') {
+        operateMotor({
+          motorName: data.target,
+          twist: data.twist,
+        });
       }
     });
 
@@ -120,4 +143,4 @@ async function start() {
   });
 }
 
-exports.start = start;
+export default webserver;

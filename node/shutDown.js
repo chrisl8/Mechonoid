@@ -1,5 +1,5 @@
-const spawn = require('child_process').spawn;
-const { updateRobotModelData } = require('./robotModel');
+import { spawn } from 'child_process';
+import { updateRobotModelData } from './robotModel.js';
 
 const shutDown = ({ reboot = false }) => {
   const shutdownArguments = [];
@@ -15,4 +15,4 @@ const shutDown = ({ reboot = false }) => {
   spawn('shutdown', shutdownArguments);
 };
 
-module.exports = shutDown;
+export default shutDown;

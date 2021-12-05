@@ -1,4 +1,7 @@
-const interfaces = require('os').networkInterfaces();
+import os from 'os';
+import esMain from 'es-main';
+
+const interfaces = os.networkInterfaces();
 
 const ipAddress = () => {
   let ip = false;
@@ -17,8 +20,10 @@ const ipAddress = () => {
   }
   return ip;
 };
-exports.ipAddress = ipAddress;
-if (require.main === module) {
+
+export default ipAddress;
+
+if (esMain(import.meta)) {
   // Run the function if this is called directly instead of required.
   /* istanbul ignore next */
   console.log(ipAddress());

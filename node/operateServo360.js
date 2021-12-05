@@ -1,9 +1,9 @@
-const convertNumberRange = require('./convertNumberRange');
-const {
+import convertNumberRange from './convertNumberRange.js';
+import {
   robotModel,
   hardwareFunctions,
   updateRobotModelData,
-} = require('./robotModel');
+} from './robotModel.js';
 
 const operateServo360 = ({ servoName, value }) => {
   // Prevent movement when already at full stop.
@@ -18,7 +18,11 @@ const operateServo360 = ({ servoName, value }) => {
   if (
     clearToMove &&
     robotModel.servos[servoName] &&
-    robotModel.hardware.maestroReady
+    robotModel.hardware[robotModel.servos[servoName].hardwareController] &&
+    robotModel.hardware[robotModel.motors[servoName].hardwareController]
+      .online &&
+    robotModel.hardware[robotModel.motors[servoName].hardwareController]
+      .online === true
   ) {
     let target = robotModel.servos[servoName].off;
     // Servo input from web server for 360 servo is in -1000 to 1000 range, with 0 being off.
@@ -41,7 +45,9 @@ const operateServo360 = ({ servoName, value }) => {
     }
     updateRobotModelData(`servos.${servoName}.lastValue`, value);
     // eslint-disable-next-line no-underscore-dangle
-    hardwareFunctions.maestro._sendCommand(
+    hardwareFunctions[
+      robotModel.servos[servoName].hardwareController
+    ].connection._sendCommand(
       0x84,
       robotModel.servos[servoName].channel,
       target,
@@ -49,4 +55,4 @@ const operateServo360 = ({ servoName, value }) => {
   }
 };
 
-module.exports = operateServo360;
+export default operateServo360;

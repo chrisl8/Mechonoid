@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Slider } from 'antd';
+import fancyName from '../utils/FancyName';
 
 const Servo = (props) => {
   const [disabled] = useState(false);
@@ -21,11 +22,7 @@ const Servo = (props) => {
   //       so that if user A move it, user B an see that it has moved.
 
   return (
-    <Card
-      size="small"
-      title="Servo"
-      extra={props.name.charAt(0).toUpperCase() + props.name.slice(1)}
-    >
+    <Card size="small" title="Servo" extra={fancyName(props.name)}>
       <div style={sliderStyle}>
         <Slider
           included={false}

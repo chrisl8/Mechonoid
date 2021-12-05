@@ -1,4 +1,4 @@
-const UsbDevice = require('./UsbDevice');
+import UsbDevice from './UsbDevice.js';
 
 const findUsbDevice = async ({
   logName,
@@ -16,4 +16,4 @@ const findUsbDevice = async ({
   return usbDeviceName;
 };
 
-module.exports = findUsbDevice;
+export default findUsbDevice;

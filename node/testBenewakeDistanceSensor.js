@@ -1,5 +1,5 @@
-const findUsbDevice = require('./findUsbDevice');
-const BenewakeDistanceSensor = require('./BenewakeDistanceSensor');
+import findUsbDevice from './findUsbDevice.js';
+import BenewakeDistanceSensor from './BenewakeDistanceSensor.js';
 
 let previousDistance;
 
@@ -11,22 +11,20 @@ const displayData = (data) => {
 };
 
 if (require.main === module) {
-  (async () => {
-    try {
-      const benewakeDistanceSensorFtdiPort = await findUsbDevice({
-        logName: 'Benewake Distance Sensor via FTDI',
-        uniqueDeviceString: 'FT232R_USB_UART',
-        stringLocation: 'ID_MODEL',
-      });
+  try {
+    const benewakeDistanceSensorFtdiPort = await findUsbDevice({
+      logName: 'Benewake Distance Sensor via FTDI',
+      uniqueDeviceString: 'FT232R_USB_UART',
+      stringLocation: 'ID_MODEL',
+    });
 
-      if (benewakeDistanceSensorFtdiPort) {
-        console.log(benewakeDistanceSensorFtdiPort);
-        // eslint-disable-next-line no-new
-        new BenewakeDistanceSensor(benewakeDistanceSensorFtdiPort, displayData);
-      }
-    } catch (e) {
-      console.error('Test failed with error:');
-      console.error(e);
+    if (benewakeDistanceSensorFtdiPort) {
+      console.log(benewakeDistanceSensorFtdiPort);
+      // eslint-disable-next-line no-new
+      new BenewakeDistanceSensor(benewakeDistanceSensorFtdiPort, displayData);
     }
-  })();
+  } catch (e) {
+    console.error('Test failed with error:');
+    console.error(e);
+  }
 }

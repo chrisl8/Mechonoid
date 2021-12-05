@@ -119,7 +119,7 @@ if ! (grep NVM_SYMLINK_CURRENT ~/.bashrc >/dev/null); then
   sh -c "echo \"export NVM_SYMLINK_CURRENT=true\" >> ~/.bashrc"
 fi
 nvm install --lts
-nvm alias default "lts/*"
+nvm alias default node
 
 cd "${HOME}/${GIT_REPO_AND_FOLDER}/node"
 printf "\n${YELLOW}[Grabbing node dependencies for Node.js scripts]${NC}\n"

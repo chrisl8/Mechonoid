@@ -1,12 +1,12 @@
 // Load settings not included in git repo
 
-const fs = require('fs');
+import fs from 'fs';
 
 const configDataFile = `${process.env.HOME}/.robotAnything/config.json`;
 
-let configData = {};
+let configDataImport = {};
 try {
-  configData = JSON.parse(fs.readFileSync(configDataFile, 'utf8'));
+  configDataImport = JSON.parse(fs.readFileSync(configDataFile, 'utf8'));
 } catch (e) {
   console.error(
     `Error loading ${process.env.HOME}/.robotAnything/config.json !!!`,
@@ -17,4 +17,6 @@ try {
   process.exit(1);
 }
 
-module.exports = configData;
+const configData = configDataImport;
+
+export default configData;

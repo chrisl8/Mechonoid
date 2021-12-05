@@ -1,5 +1,5 @@
-const operateServo360 = require('./operateServo360');
-const { robotModel, updateRobotModelData } = require('./robotModel');
+import operateServo360 from './operateServo360.js';
+import { robotModel, updateRobotModelData } from './robotModel.js';
 
 function sendServoToLocationUsingSwitches(data) {
   console.log(data);
@@ -59,4 +59,4 @@ function sendServoToLocationUsingSwitches(data) {
   }
 }
 
-module.exports = sendServoToLocationUsingSwitches;
+export default sendServoToLocationUsingSwitches;

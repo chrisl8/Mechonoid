@@ -4,28 +4,24 @@ import Servo360s from './Servo360s';
 import Servos from './Servos';
 
 const ServoController = (props) => {
-  let servoControllerReady = null;
+  let controllerReady = null;
   for (const [, value] of Object.entries(props.servos)) {
-    if (servoControllerReady !== false) {
-      servoControllerReady = props.hardware[value.hardwareController];
+    if (controllerReady !== false) {
+      controllerReady = props.hardware[value.hardwareController];
     }
   }
 
-  return (
+  return controllerReady ? (
     <>
-      {servoControllerReady ? (
-        <>
-          <Row>
-            <Servo360s socket={props.socket} servos={props.servos} />
-          </Row>
-          <Row>
-            <Servos socket={props.socket} servos={props.servos} />
-          </Row>
-        </>
-      ) : (
-        <Row>Servo Controller not Ready yet...</Row>
-      )}
+      <Row>
+        <Servo360s socket={props.socket} servos={props.servos} />
+      </Row>
+      <Row>
+        <Servos socket={props.socket} servos={props.servos} />
+      </Row>
     </>
+  ) : (
+    <Row>Servo Controller not Ready yet...</Row>
   );
 };
 

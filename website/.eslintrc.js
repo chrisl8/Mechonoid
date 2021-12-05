@@ -10,7 +10,7 @@
 // because it makes both AirBNB and Prettier happy and is automatic.
 // Less thinking is better than perfect and/or my preferences.
 
-module.exports = {
+export default {
   parser: 'babel-eslint',
   plugins: ['react', 'prettier'],
   extends: ['plugin:react/recommended', 'airbnb', 'prettier'],
@@ -41,6 +41,14 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'react/no-access-state-in-setstate': 'off',
     'react/no-did-update-set-state': 'off',
-    'no-unused-vars': ['warn'], // Due to some conflict with 'airbnb'
+    'no-unused-vars': ['warn'], // Due to some conflict with 'airbnb',
+    'react/function-component-definition': [
+      2,
+      {
+        namedComponents: 'arrow-function',
+        unnamedComponents: 'arrow-function',
+      },
+    ], // https://github.com/airbnb/javascript/issues/2505
+    // https://stackoverflow.com/a/69931909/4982408
   },
 };

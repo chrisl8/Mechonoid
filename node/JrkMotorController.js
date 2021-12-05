@@ -1,8 +1,7 @@
-const spawn = require('child_process').spawn;
-const spawnSync = require('child_process').spawnSync;
+import { spawn, spawnSync } from 'child_process';
 
-const wait = require('./wait');
-const { updateRobotModelData, hardwareFunctions } = require('./robotModel');
+import wait from './wait.js';
+import { hardwareFunctions } from './robotModel.js';
 
 const jrk2cmd = 'jrk2cmd';
 
@@ -252,4 +251,4 @@ class JrkMotorController {
   }
 }
 
-module.exports = JrkMotorController;
+export default JrkMotorController;

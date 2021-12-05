@@ -1,18 +1,18 @@
-const _ = require('lodash');
-const { EventEmitter } = require('events');
+import _ from 'lodash';
+import { EventEmitter } from 'events';
 
-const configData = require('./configData');
+import configData from './configData.js';
 
 // TODO: Front end should indicate the in between positions of rotating parts.
 
 // The hardware functions don't work inside of the Observable system,
 // and they don't need to update the web site anyway.
-const hardwareFunctions = { ...configData.hardwareControllers };
+const hardwareFunctions = _.cloneDeep(configData.hardwareControllers);
 
-const robotModel = { ...configData };
+const robotModel = _.cloneDeep(configData);
+delete robotModel.hardwareControllers;
 
 robotModel.status = 'Online';
-robotModel.mainBatteryVoltage = null;
 
 robotModel.hardware = {};
 
@@ -47,7 +47,7 @@ const updateRobotModel = () => {
   debounceCheckAndUpdateFriends();
 };
 
-module.exports = {
+export {
   robotModel,
   hardwareFunctions,
   robotModelEmitter,

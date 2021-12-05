@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Slider } from 'antd';
+import fancyName from '../utils/FancyName';
 
 const Servo360 = (props) => {
   const [disabled] = useState(false);
@@ -23,7 +24,7 @@ const Servo360 = (props) => {
     <Card
       size="small"
       title="Servo 360"
-      extra={props.name.charAt(0).toUpperCase() + props.name.slice(1)}
+      extra={fancyName(props.name)}
       style={{ width: 300 }}
     >
       <Slider

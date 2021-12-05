@@ -11,6 +11,12 @@
 // Less thinking is better than perfect and/or my preferences.
 
 module.exports = {
+  // https://gils-blog.tayar.org/posts/using-jsm-esm-in-nodejs-a-practical-guide-part-3/
+  parser: "@babel/eslint-parser", // Required to allow top level await
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: 'module',
+  },
   plugins: ['prettier'],
   extends: ['airbnb', 'prettier'],
   env: {
@@ -29,5 +35,8 @@ module.exports = {
     'prefer-destructuring': 'off',
     'no-plusplus': 'off',
     'no-restricted-syntax': 'off',
+    // Modules MUST use extensions
+    // https://stackoverflow.com/a/68783000/4982408
+    'import/extensions': ['error', 'always'],
   },
 };

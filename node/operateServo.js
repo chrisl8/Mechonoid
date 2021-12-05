@@ -1,8 +1,8 @@
-const {
+import {
   robotModel,
   hardwareFunctions,
   updateRobotModelData,
-} = require('./robotModel');
+} from './robotModel.js';
 
 function convertNumberRange(oldValue, oldMin, oldMax, newMin, newMax) {
   return ((oldValue - oldMin) * (newMax - newMin)) / (oldMax - oldMin) + newMin;
@@ -20,7 +20,11 @@ const operateServo = ({ servoName, value }) => {
   if (
     clearToMove &&
     robotModel.servos[servoName] &&
-    robotModel.hardware[robotModel.servos[servoName].hardwareController]
+    robotModel.hardware[robotModel.servos[servoName].hardwareController] &&
+    robotModel.hardware[robotModel.motors[servoName].hardwareController]
+      .online &&
+    robotModel.hardware[robotModel.motors[servoName].hardwareController]
+      .online === true
   ) {
     let target = robotModel.servos[servoName].off;
     // Servo input from web server for 360 servo is in -1000 to 1000 range, with 0 being off.
@@ -53,4 +57,4 @@ const operateServo = ({ servoName, value }) => {
   }
 };
 
-module.exports = operateServo;
+export default operateServo;

@@ -7,6 +7,7 @@ import ApiDocumentation from './components/ApiDocumentation';
 import OsCommands from './components/OsCommands';
 import ServoController from './components/ServoController';
 import MotorController from './components/MotorController';
+import HardwareControllerStats from './components/hardwareControllerStats';
 
 const { Header, Content, Footer } = Layout;
 
@@ -29,7 +30,7 @@ const App = () => {
       // TODO: This IP shouldn't be on github in prod code,
       //        but could we get this from the online robotwebservice?
       //        or just delete this code and go back to manual hacking code when testing.
-      newSocket = openSocket(`http://192.168.1.56/`);
+      newSocket = openSocket(`http://192.168.1.49/`);
     } else {
       // Production
       newSocket = openSocket();
@@ -103,7 +104,7 @@ const App = () => {
               <MotorController
                 socket={socket}
                 motors={robotModel.motors}
-                roboClawReady={robotModel.hardware.roboClawReady}
+                hardware={robotModel.hardware}
               />
             )}
           {robotModel.hardware &&
@@ -115,13 +116,18 @@ const App = () => {
                 hardware={robotModel.hardware}
               />
             )}
-          <Row>
-            {robotModel.mainBatteryVoltage && (
+          {robotModel.hardware && (
+            <Row>
               <Col style={{ margin: 8 }}>
-                Battery Voltage: {robotModel.mainBatteryVoltage}
+                <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                  Controllers
+                </div>
+                <HardwareControllerStats hardware={robotModel.hardware} />
               </Col>
-            )}
-            {/* TODO: Only show this if the robot has lights. */}
+            </Row>
+          )}
+          {/* TODO: Only show this if the robot has lights. */}
+          <Row>
             <Col style={{ margin: 8 }}>
               <Button onClick={handleLightsButton}>Lights</Button>
             </Col>

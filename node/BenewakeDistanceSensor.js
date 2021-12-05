@@ -1,5 +1,5 @@
-const SerialPort = require('serialport');
-const DelimiterPlusByteLengthParser = require('./serialDataParserDelimiterPlusByteLength');
+import SerialPort from 'serialport';
+import DelimiterPlusByteLengthParser from './serialDataParserDelimiterPlusByteLength.js';
 
 /* Benewake TF02-Pro Serial Communication for Node.js
 
@@ -98,4 +98,4 @@ class BenewakeDistanceSensor {
   }
 }
 
-module.exports = BenewakeDistanceSensor;
+export default BenewakeDistanceSensor;

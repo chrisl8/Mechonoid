@@ -1,13 +1,13 @@
-const os = require('os');
-const fetch = require('node-fetch');
-const base64 = require('base-64');
-const ipAddress = require('./ipAddress');
-const { robotModel } = require('./robotModel');
+import os from 'os';
+import fetch from 'node-fetch';
+import base64 from 'base-64';
+import ipAddress from './ipAddress.js';
+import { robotModel } from './robotModel.js';
 
 const cloudServerConnect = async () => {
   if (robotModel.cloudServer.exists) {
     const url = `${robotModel.cloudServer.address}addHostname`;
-    const ip = ipAddress.ipAddress();
+    const ip = ipAddress();
     const hostname = os.hostname();
     const body = { hostname, ip };
     if (robotModel.webServerPort && robotModel.webServerPort !== 80) {
@@ -40,4 +40,4 @@ const cloudServerConnect = async () => {
   }
 };
 
-module.exports = cloudServerConnect;
+export default cloudServerConnect;
