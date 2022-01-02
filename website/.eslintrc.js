@@ -10,15 +10,29 @@
 // because it makes both AirBNB and Prettier happy and is automatic.
 // Less thinking is better than perfect and/or my preferences.
 
-export default {
-  parser: 'babel-eslint',
-  plugins: ['react', 'prettier'],
-  extends: ['plugin:react/recommended', 'airbnb', 'prettier'],
-  env: {
-    es6: true, // Probably not needed, because of babel-eslint
-    node: true, // Probably not needed, because of babel-eslint
-    browser: true, // Allows usage of window global
+module.exports = {
+  parser: '@babel/eslint-parser',
+  settings: {
+    react: {
+      version: 'detect',
+    },
   },
+  env: {
+    browser: true,
+    es2021: true,
+  },
+  parserOptions: {
+    sourceType: 'module',
+  },
+  plugins: ['react', 'prettier'],
+  extends: [
+    'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
+    'plugin:testing-library/react',
+    'plugin:jest/all',
+    'airbnb',
+    'prettier',
+  ],
   rules: {
     'prettier/prettier': 'error',
     // Even FB says to name JSX files .js these days
