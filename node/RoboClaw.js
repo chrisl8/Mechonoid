@@ -26,8 +26,8 @@ const commandOptions = {
   MIXEDBACKWARD: { command: 9, dataTypes: ['UInt8'] },
   MIXEDRIGHT: { command: 10, dataTypes: ['UInt8'] },
   MIXEDLEFT: { command: 11, dataTypes: ['UInt8'] },
-  MIXEDFB: { command: 12 },
-  MIXEDLR: { command: 13 },
+  MIXEDFB: { command: 12, dataTypes: ['Int8'] },
+  MIXEDLR: { command: 13, dataTypes: ['Int8'] },
   GETM1ENC: { command: 16 },
   GETM2ENC: { command: 17 },
   GETM1SPEED: { command: 18 },
@@ -100,13 +100,33 @@ const commandOptions = {
   READNVM: { command: 95 },
   SETCONFIG: { command: 98 },
   GETCONFIG: { command: 99 },
-  SETM1MAXCURRENT: { command: 133 },
-  SETM2MAXCURRENT: { command: 134 },
+  SETM1MAXCURRENT: {
+    command: 133,
+    dataTypes: ['Int32BE', 'UInt8', 'UInt8', 'UInt8', 'UInt8'],
+  },
+  SETM2MAXCURRENT: {
+    command: 134,
+    dataTypes: ['Int32BE', 'UInt8', 'UInt8', 'UInt8', 'UInt8'],
+  },
   GETM1MAXCURRENT: { command: 135 },
   GETM2MAXCURRENT: { command: 136 },
   SETPWMMODE: { command: 148 },
   GETPWMMODE: { command: 149 },
   FLAGBOOTLOADER: { command: 255 },
+};
+
+const convertBitstoArray = (bits) => {
+  const bitsArray = [];
+  // How to read through all the bits in a byte
+  // Note that this walks in them in reverse order from what Roboclaw documents them.
+  // https://stackoverflow.com/a/18088813/4982408
+  for (let i = 7; i >= 0; i--) {
+    // eslint-disable-next-line no-bitwise
+    const bit = bits[4] & (1 << i) ? 1 : 0;
+    // do something with the bit (push to an array if you want a sequence)
+    bitsArray.push(bit);
+  }
+  return bitsArray;
 };
 
 class RoboClaw {
@@ -194,7 +214,7 @@ class RoboClaw {
         if (this.currentCommand.callback) {
           this.currentCommand.callback({
             myName,
-            temperature: data.readInt16BE() / 10,
+            temperatureOne: data.readInt16BE() / 10,
           });
         }
       } else if (this.currentCommand.command === 'GETTEMP2') {
@@ -209,15 +229,15 @@ class RoboClaw {
         if (this.currentCommand.callback) {
           this.currentCommand.callback({
             myName,
-            temperature2: data.readInt16BE() / 10,
+            temperatureTwo: data.readInt16BE() / 10,
           });
         }
       } else if (this.currentCommand.command === 'GETMINMAXMAINVOLTAGES') {
         /*
         59 - Read Main Battery Voltage Settings
-        Read the Main Battery Voltage Settings. The voltage is calculated by dividing the value by 10
-        Send: [Address, 59]
-        Receive: [Min(2 bytes), Max(2 bytes), CRC(2 bytes)]
+          Read the Main Battery Voltage Settings. The voltage is calculated by dividing the value by 10
+          Send: [Address, 59]
+          Receive: [Min(2 bytes), Max(2 bytes), CRC(2 bytes)]
          */
         if (this.currentCommand.callback) {
           this.currentCommand.callback({
@@ -226,6 +246,73 @@ class RoboClaw {
             maximumVoltage: data.readInt16BE(2) / 10,
           });
         }
+      } else if (this.currentCommand.command === 'GETM1MAXCURRENT') {
+        /*
+        135 - Read M1 Max Current Limit
+        Read Motor 1 Maximum Current Limit. Current value is in 10ma units. To calculate divide value
+        by 100. MinCurrent is always 0.
+        Send: [Address, 135]
+        Receive: [MaxCurrent(4 bytes), MinCurrent(4 bytes), CRC(2 bytes)]
+        */
+        if (this.currentCommand.callback) {
+          this.currentCommand.callback({
+            myName,
+            maxCurrentOne: data.readInt32BE() / 100,
+            // data.readInt32BE(4),
+          });
+        }
+      } else if (this.currentCommand.command === 'GETM2MAXCURRENT') {
+        /*
+        135 - Read M1 Max Current Limit
+        Read Motor 1 Maximum Current Limit. Current value is in 10ma units. To calculate divide value
+        by 100. MinCurrent is always 0.
+        Send: [Address, 135]
+        Receive: [MaxCurrent(4 bytes), MinCurrent(4 bytes), CRC(2 bytes)]
+        */
+        if (this.currentCommand.callback) {
+          this.currentCommand.callback({
+            myName,
+            maxCurrentTwo: data.readInt32BE() / 100,
+            // data.readInt32BE(4),
+          });
+        }
+      } else if (this.currentCommand.command === 'GETENCODERMODE') {
+        /*
+        91 - Read Encoder Mode
+          Read the encoder mode for both motors.
+          Send: [Address, 91]
+          Receive: [Enc1Mode, Enc2Mode, CRC(2 bytes)]
+          Encoder Mode bits
+          Bit 7 Enable/Disable RC/Analog Encoder support
+          Bit 6 Reverse Encoder Relative Direction
+          Bit 5 Reverse Motor Relative Direction
+          Bit 4-1 N/A
+          Bit 0 Quadrature(0)/Absolute(1)
+         */
+
+        const motorOneBitsArray = convertBitstoArray(data[0]);
+        const motorTwoBitsArray = convertBitstoArray(data[1]);
+
+        // TODO: Correctly associate this data with the settings,
+        // TODO: and save it.
+        console.log('RoboClaw Encoder Modes:');
+        console.log('  Motor One:');
+        console.log(motorOneBitsArray);
+        console.log('  Motor Two:');
+        console.log(motorTwoBitsArray);
+      } else if (this.currentCommand.command === 'GETPINFUNCTIONS') {
+        /*
+        75 - Get S3, S4 and S5 Modes
+          Read mode settings for S3,S4 and S5. See command 74 for mode descriptions
+          Send: [Address, 75]
+          Receive: [S3mode, S4mode, S5mode, CRC(2 bytes)]
+        */
+        // TODO: Correctly associate this data with the settings,
+        // TODO: and save it.
+        console.log('RoboClaw Pin Functions:');
+        console.log('  S3', data[0]);
+        console.log('  S4', data[1]);
+        console.log('  S5', data[2]);
       } else if (this.currentCommand.command === 'GETVERSION') {
         // This will work on the Firmware version.
         // The last two bytes are a CRC code,
@@ -239,16 +326,53 @@ class RoboClaw {
             version: data.toString('utf8', 0, data.length - 3),
           });
         }
+      } else if (this.currentCommand.command === 'GETCURRENTS') {
+        /*
+        49 - Read Motor Currents
+        Read the current draw from each motor in 10ma increments. The amps value is calculated by dividing the value by 100.
+        Send: [Address, 49]
+        Receive: [M1 Current(2 bytes), M2 Currrent(2 bytes), CRC(2 bytes)]
+        */
+        if (this.currentCommand.callback) {
+          this.currentCommand.callback({
+            myName,
+            motorOneCurrent: data.readInt16BE() / 100,
+            motorTwoCurrent: data.readInt16BE(2) / 100,
+          });
+        }
+      } else if (this.currentCommand.command === 'GETERROR') {
+        /*
+        90 - Read Status
+        Read the current unit status.
+        Send: [Address, 90]
+        Receive: [Status, CRC(2 bytes)]
+
+        See PDF for status codes.
+        */
+        const errorDataBits = [];
+        for (let i = data.length - 2; i >= 0; i--) {
+          // eslint-disable-next-line no-bitwise
+          const bit = data[0] & (1 << i) ? 1 : 0;
+          // TODO: This may not be in the correct order, and we should interpret them.
+          errorDataBits.push(bit);
+          let errorDataString = '';
+          errorDataBits.forEach((errorBit) => {
+            errorDataString += errorBit;
+          });
+          if (this.currentCommand.callback) {
+            this.currentCommand.callback({
+              myName,
+              errorCodes: errorDataString,
+            });
+          }
+        }
       } else if (this.currentCommand.command === 'GETM1SPEED') {
         console.log(
           data.readUInt8(4) === 0 ? 'Forward: ' : 'Reverse: ',
           data.readInt32BE(),
         );
         // console.log(data.subarray(0, data.length - 2));
-      } else if (
-        this.currentCommand.command === 'READM1PID' ||
-        this.currentCommand.command === 'READM2PID'
-      ) {
+      } else if (this.currentCommand.command === 'READM1PID') {
         // This should be the PID values set and saved via the RoboClaw application
         /*
           55 - Read Motor 1 Velocity PID and QPPS Settings
@@ -267,14 +391,25 @@ class RoboClaw {
             QPPS = "Quad Pulses Per Second", which is also what command 37 uses for speed control in full "differential" drive from "joystick" input,
             so this is what we use for
          */
-        // TODO: Save this for use later in code and web site for "max speed" on inputs that go to twist.
-        console.log(
-          this.currentCommand.command,
-          data.readInt32BE(),
-          data.readInt32BE(4),
-          data.readInt32BE(8),
-          data.readInt32BE(12),
-        );
+        if (this.currentCommand.callback) {
+          this.currentCommand.callback({
+            myName,
+            motorOneP: data.readInt32BE(),
+            motorOneI: data.readInt32BE(4),
+            motorOneD: data.readInt32BE(8),
+            motorOneQPPS: data.readInt32BE(12),
+          });
+        }
+      } else if (this.currentCommand.command === 'READM2PID') {
+        if (this.currentCommand.callback) {
+          this.currentCommand.callback({
+            myName,
+            motorTwoP: data.readInt32BE(),
+            motorTwoI: data.readInt32BE(4),
+            motorTwoD: data.readInt32BE(8),
+            motorTwoQPPS: data.readInt32BE(12),
+          });
+        }
       } else if (this.currentCommand.command === 'GETM1ENC') {
         console.log('GETM1ENC');
         /*
@@ -294,7 +429,9 @@ class RoboClaw {
               Bit6 - Reserved
               Bit7 - Reserved
          */
-        // How to read through all of the bits in a byte
+
+        // TODO: Use convertBitsToArray for this.
+        // How to read through all the bits in a byte
         // Note that this walks in them in reverse order from what Roboclaw documents them.
         // https://stackoverflow.com/a/18088813/4982408
         let underFlowBit;
@@ -457,7 +594,6 @@ class RoboClaw {
               commandOptions[this.currentCommand.command].dataTypes[i] ===
               'Int32BE'
             ) {
-              console.log(this.currentCommand);
               commandBuffer.writeInt32BE(data, offset);
               offset += 4;
             } else {
@@ -480,7 +616,6 @@ class RoboClaw {
         const checksumBuffer = Buffer.alloc(2);
         checksumBuffer.writeUInt16BE(checksum);
         const bufferToSend = Buffer.concat([commandBuffer, checksumBuffer]);
-        console.log(bufferToSend);
         this.serialPort.write(bufferToSend);
       } else {
         this.serialPort.write(commandBuffer);
