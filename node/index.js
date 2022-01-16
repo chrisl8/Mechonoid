@@ -102,26 +102,50 @@ async function main() {
           callback: roboClawDataHandler,
         });
 
+        value.connection.send({
+          command: 'GETMBATT',
+          callback: roboClawDataHandler,
+        });
         // TODO: Get from config file.
         value.connection.send({
           command: 'SETMAINVOLTAGES',
           data: [11.7 * 10, 15 * 10],
         });
-
-        // TODO: Get from config file and set
-        // 'SETM1MAXCURRENT'
-        // 'SETM2MAXCURRENT'
-
         value.connection.send({
           command: 'GETMINMAXMAINVOLTAGES',
           callback: roboClawDataHandler,
         });
 
-        // TODO: Get
-        // 'GETM1MAXCURRENT'
-        // 'GETM2MAXCURRENT'
-        // 'GETENCODERMODE'
-        // 'GETPINFUNCTIONS'?
+        // TODO: Get from config file.
+        // TODO: Was 4.5 before. Not sure if this resets on power cycle or not.
+        value.connection.send({
+          command: 'SETM1MAXCURRENT',
+          data: [3 * 100, 0, 0, 0, 0],
+        });
+        value.connection.send({
+          command: 'GETM1MAXCURRENT',
+          callback: roboClawDataHandler,
+        });
+
+        // TODO: Get from config file.
+        // TODO: Was 4.5 before. Not sure if this resets on power cycle or not.
+        value.connection.send({
+          command: 'SETM2MAXCURRENT',
+          data: [3 * 100, 0, 0, 0, 0],
+        });
+        value.connection.send({
+          command: 'GETM2MAXCURRENT',
+          callback: roboClawDataHandler,
+        });
+
+        value.connection.send({
+          command: 'GETENCODERMODE',
+          callback: roboClawDataHandler,
+        });
+        value.connection.send({
+          command: 'GETPINFUNCTIONS',
+          callback: roboClawDataHandler,
+        });
 
         // TODO: Save and use this in the "twist" or "diff" drive modes
         // TODO: If this comes back with a failed checksum, we need to try again!
