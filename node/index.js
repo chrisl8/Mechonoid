@@ -353,24 +353,46 @@ async function main() {
         `servos.${location}.switchClosed.${entry}`,
         Boolean(level === 0),
       );
-      if (operations) {
-        if (operations.indexOf('stopIfLessThanZero') > -1) {
-          if (robotModel.servos[location].lastValue < 0) {
-            operateServo360({ servoName: location, value: 0 });
-          }
-        }
-        if (operations.indexOf('stopIfGreaterThanZero') > -1) {
-          if (robotModel.servos.shoulders.lastValue > 0) {
-            operateServo360({ servoName: location, value: 0 });
-          }
-        }
-        setRobotPartPosition({ location, entry, operations });
-      }
       if (
         robotModel.servos[location].switchClosed[entry] &&
         robotModel.servos[location].stopOnArrival === entry
       ) {
-        operateServo360({ servoName: location, value: 0 });
+        // TODO: holdingSpeed, holdingDelay, and stoppingDelay were obtained through trial and error, and probably belong in a config file.
+
+        // Hold briefly to try to maintain position.
+        let holdingSpeed = 30;
+        console.log(`lastValue: ${robotModel.servos[location].lastValue}`);
+        if (robotModel.servos[location].lastValue < 0) {
+          // Hold in same direction as movement.
+          holdingSpeed = -holdingSpeed;
+        }
+
+        let holdingDelay = 500;
+        let stoppingDelay = 1300;
+
+        if (entry === 'center') {
+          // Unless trying to stay in the middle, then reverse!
+          holdingSpeed = 30;
+          holdingDelay = 0;
+          stoppingDelay = 200;
+          // It has to reverse harder and longer in one direction than the other.
+          if (robotModel.servos[location].lastValue > 0) {
+            holdingSpeed = -55;
+            stoppingDelay = 600;
+          }
+        }
+
+        console.log(holdingSpeed, holdingDelay, stoppingDelay);
+        setTimeout(() => {
+          operateServo360({
+            servoName: location,
+            value: holdingSpeed,
+            override: true,
+          });
+        }, holdingDelay); // Give it time to bounce, then slow it down.
+        setTimeout(() => {
+          operateServo360({ servoName: location, value: 0 });
+        }, stoppingDelay); // Give it time to settle, then let it go.
         updateRobotModelData(`servos.${location}.stopOnArrival`, null);
       } else if (
         robotModel.servos[location].switchClosed[entry] &&
@@ -383,7 +405,20 @@ async function main() {
           servoName: location,
           value: -lastValue,
         });
+      } else if (operations) {
+        if (operations.indexOf('stopIfLessThanZero') > -1) {
+          if (robotModel.servos[location].lastValue < 0) {
+            operateServo360({ servoName: location, value: 0 });
+          }
+        }
+        if (operations.indexOf('stopIfGreaterThanZero') > -1) {
+          if (robotModel.servos.shoulders.lastValue > 0) {
+            operateServo360({ servoName: location, value: 0 });
+          }
+        }
+        setRobotPartPosition({ location, entry, operations });
       }
+
       console.log(
         `${location} ${entry} Switch ${level === 0 ? 'Closed' : 'Open'}`,
       );

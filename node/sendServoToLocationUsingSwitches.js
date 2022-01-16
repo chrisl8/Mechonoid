@@ -3,10 +3,10 @@ import { robotModel, updateRobotModelData } from './robotModel.js';
 
 function sendServoToLocationUsingSwitches(data) {
   console.log(data);
-  const selfMoveToCenterSpeed = 160; // Tweaked to get it to fall on center without going past.
+  // TODO: Should this be in the config file?
+  const selfMoveToCenterSpeed = 100; // Tweaked to get it to fall on center without going past.
   // Hitting the side requires less precision. Might as well go faster, especially if we might have a long ways to go!
-  const selfMoveSpeed = 250;
-  console.log(robotModel.servos[data.target]);
+  const selfMoveSpeed = 125;
 
   // Make code easier to read by setting easy to read variables.
   const dataIsValid = data && data.target && (data.value === 0 || data.value);

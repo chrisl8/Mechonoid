@@ -17,12 +17,12 @@ const operateServo360 = ({ servoName, value, override = false }) => {
   );
 
   if (
-    clearToMove &&
+    (clearToMove || override) &&
     robotModel.servos[servoName] &&
     robotModel.hardware[robotModel.servos[servoName].hardwareController] &&
-    robotModel.hardware[robotModel.motors[servoName].hardwareController]
+    robotModel.hardware[robotModel.servos[servoName].hardwareController]
       .online &&
-    robotModel.hardware[robotModel.motors[servoName].hardwareController]
+    robotModel.hardware[robotModel.servos[servoName].hardwareController]
       .online === true
   ) {
     let target = robotModel.servos[servoName].off;
