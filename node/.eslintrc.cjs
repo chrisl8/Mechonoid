@@ -12,7 +12,7 @@
 
 module.exports = {
   // https://gils-blog.tayar.org/posts/using-jsm-esm-in-nodejs-a-practical-guide-part-3/
-  parser: "@babel/eslint-parser", // Required to allow top level await
+  parser: '@babel/eslint-parser', // Required to allow top level await
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',

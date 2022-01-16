@@ -29,7 +29,6 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:testing-library/react',
-    'plugin:jest/all',
     'airbnb',
     'prettier',
   ],
