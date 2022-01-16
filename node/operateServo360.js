@@ -5,7 +5,8 @@ import {
   updateRobotModelData,
 } from './robotModel.js';
 
-const operateServo360 = ({ servoName, value }) => {
+const operateServo360 = ({ servoName, value, override = false }) => {
+  console.log(servoName, value);
   // Prevent movement when already at full stop.
   const clearToMove = Boolean(
     value === 0 ||

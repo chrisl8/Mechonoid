@@ -108,7 +108,6 @@ async function webserver() {
     });
 
     socket.on('motor', (data) => {
-      console.log(data);
       if (data && data.target && (data.value === 0 || data.value)) {
         operateMotor({
           motorName: data.target,
