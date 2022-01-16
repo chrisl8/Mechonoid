@@ -149,13 +149,10 @@ class JoystickControl extends Component {
             Math.cos(data.angle.radian) * data.distance;
           const joystickYfromCenter =
             Math.sin(data.angle.radian) * data.distance;
-          // TODO: Rather than randomly doing this, we should somehow tie this to the actual max speed of the motors? I think?
-          const DECREASER = 0.01; // To make the max equal 1000 like the sliders.
-          const linearSpeed =
-            Math.round(joystickYfromCenter * DECREASER * 100) / 100;
+          // Round to 2 decimal places
+          const linearSpeed = Math.round(joystickYfromCenter);
           // Angular is reversed.
-          const angularSpeed =
-            Math.round(-joystickXfromCenter * DECREASER * 100) / 100;
+          const angularSpeed = Math.round(-joystickXfromCenter);
           this.setState({
             joystickOutput: `LinearSpeed: ${linearSpeed}, AngularSpeed: ${angularSpeed}`,
           });

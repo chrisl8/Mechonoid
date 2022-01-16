@@ -4,28 +4,50 @@ import {
   hardwareFunctions,
   updateRobotModelData,
 } from './robotModel.js';
+import roboClawDataHandler from './roboClawDataHandler.js';
+import wait from './wait.js';
 
-// TODO: Set this in config file
-const baseWidth = 1; // in Meters TODO: Measure this.
+// NOTE: These are notes. The settins are in the config file.
+// const baseWidth = 0.66; // in Meters
 // https://www.pololu.com/product/2828
 // This gearmotor is a powerful 12V brushed DC motor with a 150:1 metal gearbox and an integrated quadrature encoder that provides a resolution of 64 counts per revolution of the motor shaft, which corresponds to 9600 counts per revolution of the gearbox’s output shaft.
-const countsPerRevolution = 9600;
+// const countsPerRevolution = 9600;
 // https://www.pololu.com/product/3283
 // This black polyurethane scooter/skate wheel measures 200 mm (7.9″) in diameter and 30 mm (1.2″) in width
-const wheelRadius = 200 / 2 / 1000; // in Meters
+// const wheelRadius = 200 / 2 / 1000; // in Meters
 
-const stepsPerMeter = countsPerRevolution / (2 * wheelRadius * Math.PI);
-
-function convertTwistToMotorSpeeds(twist) {
+function convertTwistToMotorSpeeds({ motorName, twist }) {
   // Copied from:
   // void diffdrive_roscore::twist_callback(const geometry_msgs::Twist &msg)
   // in:
   // https://github.com/nobleo/roboclaw/blob/master/src/diffdrive_roscore.cpp
 
+  const stepsPerMeter =
+    robotModel.motors[motorName].countsPerRevolution /
+    (2 * robotModel.motors[motorName].wheelRadius * Math.PI);
+
   const motorVel = {
     mot1_vel_sps: 0,
     mot2_vel_sps: 0,
   };
+
+  // eslint-disable-next-line no-param-reassign
+  twist.linearSpeed = convertNumberRange(
+    twist.linearSpeed,
+    -100,
+    100,
+    -robotModel.motors[motorName].maxLinearSpeed,
+    robotModel.motors[motorName].maxLinearSpeed,
+  );
+
+  // eslint-disable-next-line no-param-reassign
+  twist.angularSpeed = convertNumberRange(
+    twist.angularSpeed,
+    -100,
+    100,
+    -robotModel.motors[motorName].maxAngularSpeed,
+    robotModel.motors[motorName].maxAngularSpeed,
+  );
 
   // Linear
   motorVel.mot1_vel_sps += stepsPerMeter * twist.linearSpeed;
@@ -33,10 +55,16 @@ function convertTwistToMotorSpeeds(twist) {
 
   // Angular
   motorVel.mot1_vel_sps += -(
-    (stepsPerMeter * twist.angularSpeed * baseWidth) /
+    (stepsPerMeter *
+      twist.angularSpeed *
+      robotModel.motors[motorName].baseWidth) /
     2
   );
-  motorVel.mot2_vel_sps += (stepsPerMeter * twist.angularSpeed * baseWidth) / 2;
+  motorVel.mot2_vel_sps +=
+    (stepsPerMeter *
+      twist.angularSpeed *
+      robotModel.motors[motorName].baseWidth) /
+    2;
 
   // Integers only please
   motorVel.mot1_vel_sps = Math.trunc(motorVel.mot1_vel_sps);
@@ -59,7 +87,7 @@ let lastMotorName;
 let lastValue;
 let lastTwist;
 
-const operateMotor = ({ motorName, value, twist }) => {
+const operateMotor = async ({ motorName, value, twist }) => {
   if (
     motorName !== lastMotorName ||
     value !== lastValue ||
@@ -71,8 +99,14 @@ const operateMotor = ({ motorName, value, twist }) => {
     if (typeof twist === 'object' && twist !== null) {
       // TODO: Convert incoming max/min speeds to those of the actual motor.
       // TODO: Get the max speed. I think I set it in the Roboclaw already?
-      const motorVel = convertTwistToMotorSpeeds(twist);
-      console.log(motorName, twist, motorVel);
+      const motorVel = convertTwistToMotorSpeeds({ motorName, twist });
+      if (robotModel.motors[motorName].reversed) {
+        motorVel.reverse();
+      }
+      if (robotModel.motors[motorName].mountedBackwards) {
+        motorVel[0] = -motorVel[0];
+        motorVel[1] = -motorVel[1];
+      }
       hardwareFunctions[
         robotModel.motors[motorName].hardwareController
       ].connection.send({
@@ -107,7 +141,9 @@ const operateMotor = ({ motorName, value, twist }) => {
           commandPrefix = `M${robotModel.motors[motorName].channel}`;
         }
 
-        let commandSuffix = 'FORWARD';
+        let commandSuffix = robotModel.motors[motorName].mountedBackwards
+          ? 'BACKWARD'
+          : 'FORWARD';
         if (value > 0) {
           data = convertNumberRange(
             value,
@@ -117,7 +153,7 @@ const operateMotor = ({ motorName, value, twist }) => {
             robotModel.motors[motorName].maximum,
           );
         } else if (value < 0) {
-          commandSuffix = 'BACKWARD';
+          commandSuffix = commandSuffix === 'BACKWARD' ? 'FORWARD' : 'BACKWARD';
           data = convertNumberRange(
             value,
             -1000,
@@ -144,8 +180,6 @@ const operateMotor = ({ motorName, value, twist }) => {
 
         const command = `${commandPrefix}${commandSuffix}`;
 
-        console.log(motorName, value, command, data);
-
         // Mixed Mode will not work until it has a valid "turn" entry as well as drive entry.
         // So just send a "MIXEDRIGHT" 0 to make it happy.
         // TODO: This might be better sent at initialization time?
@@ -168,6 +202,14 @@ const operateMotor = ({ motorName, value, twist }) => {
         ].connection.send({
           command,
           data,
+        });
+        // Update currents
+        await wait(10);
+        hardwareFunctions[
+          robotModel.motors[motorName].hardwareController
+        ].connection.send({
+          command: 'GETCURRENTS',
+          callback: roboClawDataHandler,
         });
       }
     }
