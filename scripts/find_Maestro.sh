@@ -18,4 +18,4 @@ done
 SCRIPTDIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 # echo "${SCRIPTDIR}" # For debugging
 
-node "${SCRIPTDIR}/../node/UsbDevice.js" "Pololu_Mini_Maestro_18-Channel_USB_Servo_Controller" ID_MODEL
+node "${SCRIPTDIR}/../node/UsbDevice.js" "Pololu_Mini_Maestro_12-Channel_USB_Servo_Controller" ID_MODEL
