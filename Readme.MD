@@ -4,95 +4,46 @@
 
 This really isn't ready for public consumption yet.
 
+## Target Hardware and Operating System
+
+This is intended to run on a Raspberry Pi 4 running **Ubuntu** MATE 20.04 (LTS).  I use the 4GB model, but you can try others at your own risk. 
+
+The Pi is a very widely supported and readily available Single Board Computer (SBC) that runs efficiently on 5 volts that can be provided from a battery via step-down converters.
+
+I intend to use Robot Operating System (ROS) which requires Ubuntu, not Raspbian, to be easily installed.
+
+ubuntuMATE provides a useful desktop environment that the default Ubuntu 20.04 for Pi does not. This GUI is especially helpful for getting WiFi and Bluetooth connections working.
+
+
 ## Raspberry Pi Setup
-
-This is intended to run on a Raspberry Pi 4 running **Ubuntu**.  I use the 4GB model, but you can try others at your own risk. 
-
-TL;DR: Put a fresh copy of Ubuntu 20.04 LTS on your robot's Raspberry Pi then run the installation script.
 
 Follow the steps below:
 
-### Install Ubuntu
-See: https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#1-overview for full instructions.
- 
-Summary:
+### Install Ubuntu MATE 20.04 LTS
 
-- Install and launch the Raspberry Pi OS Imager
-    - For Linux it goes like this:
-      `sudo dpkg -i ./imager_1.5_amd64.deb`
-      `sudo apt --fix-broken install`
-      - Launch from Ubuntu Desktop menu
-    - For Windows, just install and run it.
-- Pick
-  - Other general purpose OS
-    - Ubuntu
-      - Ubuntu Server 20.04.3 LTS 64-bit
-        - This is the one with no desktop, because we don’t need that.
-    
-### Enable WiFi for headless boot
+1. Download the [64-bit Focal version of Ubuntu for Raspberry Pi](https://ubuntu-mate.org/download/arm64/focal/) 
+2. Follow the [ubuntuMATE Raspberry Pi Installation Guide](https://ubuntu-mate.org/raspberry-pi/install/) to install Ubuntu MATE 20.04 LTS.
 
-Enable Wifi on boot without Display
-Ubuntu:  
-https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#3-wifi-or-ethernet
+### Notes
+ - Pick a Computer Name that you want your "robot" to be known by, as it will be seen and usd in the interface.
+ - **I suggest setting "Log in automatically"** to make the robot easier to work with.
+   - Just don't store sensitive information on this device.
+ - I also suggest not making the login password overly complex, as you may need to use it in the field. Again, this isn't a place to keep your private data.
+ - The install can stall for a **long time** at `waiting for unattended-upgr to exit`. Just wait it out.
 
-
-In the “system-boot” mounted volume edit a file called `network-config`:
-
-![Screenshot%20from%202020-02-13%2016-09-42](https://ubuntucommunity.s3.dualstack.us-east-2.amazonaws.com/optimized/2X/5/5313728482a5817454c6ec7991e615f622015d8c_2_690x423.png)
-
-
-Edit the `network-config` file to add your Wi-Fi credentials. An example is already included in the file, you can simply adapt it.
-To do so, uncomment (remove the “#” at the beginning) and edit the following lines:
-
-    wifis:
-      wlan0:
-        dhcp4: true
-        optional: true
-        access-points:
-          <wifi network name>:
-            password: "<wifi password>"
-
-For example:
-
-    wifis:
-      wlan0:
-        dhcp4: true
-        optional: true
-        access-points:
-          "home network":
-            password: "123456789"
-> Note: network name **must** be enclosed in quotation marks, even though the example does not demonstrate this.
-
-Save the file and extract the card from your laptop.
-
-> Note: During the first boot, your Raspberry Pi will try to connect to this network. It will fail the first time around.
-> 
-> To deal with this **either**:  
-> A. Once it seems done, pull the power cable and plug it in again, and it should connect this time.  
-> or  
-> B. Connect an Ethernet cable to use to connect to it after the first boot, SSH to it, and reboot it right away to make WiFi work.
-
-MY experience is that the way to reliably get the OS to work consitently and connect to Wifi is to  
-connect a keyboard and monitor (to HDMI 0, not 1),
-let it finish booting,
-leave it alone for five or ten minutes to make sure it is done,
-(Note: It actually creates the ubuntu account during the first boot, so it is possible to try logging in before he account exists, which won't work)
-log in as ubuntu/ubunut,
-change your pasword as required,
-and reboot.
-
-Trying to just unplug it and plug it in and get it on Wifi seems to only work sometimes.
-
-### Log in
-
-Initial username/password is ubuntu and ubuntu. It should make you change the password, but if not, do it.
-
-### Change hostname
-
-The hostname on the Pi is used for connecting to the web interface.  
-
-I find it to be helpful to change it to something meaningful by  
-editing `/etc/hostname` and then rebooting.
+#### After Install and Boot
+ - UN-check "Open Welcome when I log on." and Close the "Welcome" window.
+ - If you do not want the screen to LOCK after it times out:
+   - Menu -> Preferences -> Screensaver
+     - UN-check "Lock screen when screensaver is active"
+     - I also suggest setting Screensaver theme to "Blank screen"
+ - Open up a Terminal (Menu -> System Tools -> MATE Terminal)
+   - You can expand the Terminal window to fill the screen with F11 if you like 
+   - If you didn't already during the install, install updates:
+     - `sudo apt update`
+     - `sudo apt upgrade`
+     - Reboot either via the menus or `sudo reboot`
+     - After reboot open the terminal again.
 
 ## RobotAnywhere Install
 There is a script to install everything. Run:
