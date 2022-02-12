@@ -168,7 +168,7 @@ fi
 
 if ! sudo test -e "/root/.robotAnything"; then
   printf "\n${YELLOW}[Creating config data link for root.]${NC}\n"
-  sudo ln -s /home/ubuntu/.robotAnything /root
+  sudo ln -s "/home/${USER}/.robotAnything /root"
 fi
 
 if [[ -f ~/.bashrc ]]; then
