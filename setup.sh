@@ -16,9 +16,17 @@ YELLOW='\033[1;33m'
 LIGHT_PURPLE='\033[1;35m'
 NC='\033[0m' # NoColor
 
+printf "\n${YELLOW}[Checking OS and Version]${NC}\n"
+if ! (grep "DISTRIB_ID=Ubuntu" /etc/lsb-release>/dev/null) || ! (grep "DISTRIB_RELEASE=20.04" /etc/lsb-release>/dev/null) || ! (grep "DISTRIB_CODENAME=focal" /etc/lsb-release>/dev/null); then
+  printf "${RED}[This script will only work on Ubuntu Focal (20.04)!!]${NC}\n"
+  printf "${RED}https://github.com/chrisl8/RobotAnything${NC}\n"
+  exit 1
+fi
+
 printf "\n${YELLOW}[Updating & upgrading all existing Ubuntu packages]${NC}\n"
 sudo apt update
 sudo apt upgrade -y
+sudo apt autoremove -y
 
 PACKAGE_TO_INSTALL_LIST=()
 PACKAGE_TO_INSTALL_LIST+=(git)
@@ -33,6 +41,8 @@ PACKAGE_TO_INSTALL_LIST+=(build-essential)
 #build-essential includes things like make and libraries required to build the GPIO tools
 PACKAGE_TO_INSTALL_LIST+=(libraspberrypi-bin)
 #libraspberrypi-bin provides extra commands for working with the Raspberry Pi specifically.
+PACKAGE_TO_INSTALL_LIST+=(openssh-server)
+#openssh-server is helpful for remotely controlling the Raspberry Pi
 
 printf "\n${YELLOW}[Installing additional Ubuntu and ROS Packages for RobotAnything]${NC}\n"
 printf "${BLUE}This runs every time, in case new packages were added.${NC}\n"
