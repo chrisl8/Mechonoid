@@ -118,7 +118,7 @@ sudo bash -ic "nvm install --lts;true"
 sudo bash -ic "npm install pm2@latest -g;true"
 
 # We will do as much setup and such as we can locally though.
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 export NVM_DIR="${HOME}/.nvm"
 # shellcheck source=/home/chrisl8/.nvm/nvm.sh
 [[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh" # This loads nvm
