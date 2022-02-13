@@ -14,6 +14,7 @@ YELLOW='\033[1;33m'
 #LIGHTCYAN='\033[1;36m'
 #LIGHTBLUE='\033[1;34m'
 LIGHT_PURPLE='\033[1;35m'
+BRIGHT_WHITE='\033[1;97m'
 NC='\033[0m' # NoColor
 
 printf "\n${YELLOW}[Checking OS and Version]${NC}\n"
@@ -21,6 +22,24 @@ if ! (grep "DISTRIB_ID=Ubuntu" /etc/lsb-release>/dev/null) || ! (grep "DISTRIB_R
   printf "${RED}[This script will only work on Ubuntu Focal (20.04)!!]${NC}\n"
   printf "${RED}https://github.com/chrisl8/RobotAnything${NC}\n"
   exit 1
+fi
+
+IS_RASPBERRY_PI=false
+if (grep "Raspberry Pi" /proc/cpuinfo>/dev/null); then
+  IS_RASPBERRY_PI=true
+fi
+
+if ! [[ ${IS_RASPBERRY_PI} == "true" ]]; then
+  printf "\n${YELLOW}This is ONLY meant to work on a Raspberry Pi!${NC}\n"
+  printf "If you continue the install, expect problems!\n"
+  if ! [[ ${CI} == "true" ]]; then # Never ask questions in Travis test environment
+    printf "${BRIGHT_WHITE}"
+    read -n 1 -s -r -p "Do you want to continue? (y or n) " CONTINUE_ANYWAY
+    printf "${NC}\n"
+    if ! [[ ${CONTINUE_ANYWAY} == "y" ]]; then
+      exit 1
+    fi
+  fi
 fi
 
 printf "\n${YELLOW}[Updating & upgrading all existing Ubuntu packages]${NC}\n"
@@ -33,16 +52,19 @@ PACKAGE_TO_INSTALL_LIST+=(git)
 #git - It is unlikely that you got this far without git, but just in case.
 PACKAGE_TO_INSTALL_LIST+=(wget)
 #wget is required to install Node Version Manager (nvm)
-PACKAGE_TO_INSTALL_LIST+=(rpi.gpio-common)
-#rpi.gpio-common - Required to use the GPIO pins in Ubuntu
 PACKAGE_TO_INSTALL_LIST+=(unzip)
 #unzip is required to extract downloaded packages for installation
 PACKAGE_TO_INSTALL_LIST+=(build-essential)
 #build-essential includes things like make and libraries required to build the GPIO tools
-PACKAGE_TO_INSTALL_LIST+=(libraspberrypi-bin)
-#libraspberrypi-bin provides extra commands for working with the Raspberry Pi specifically.
 PACKAGE_TO_INSTALL_LIST+=(openssh-server)
 #openssh-server is helpful for remotely controlling the Raspberry Pi
+
+if [[ ${IS_RASPBERRY_PI} == "true" ]]; then
+  PACKAGE_TO_INSTALL_LIST+=(rpi.gpio-common)
+  #rpi.gpio-common - Required to use the GPIO pins in Ubuntu
+  PACKAGE_TO_INSTALL_LIST+=(libraspberrypi-bin)
+  #libraspberrypi-bin provides extra commands for working with the Raspberry Pi specifically.
+fi
 
 printf "\n${YELLOW}[Installing additional Ubuntu and ROS Packages for RobotAnything]${NC}\n"
 printf "${BLUE}This runs every time, in case new packages were added.${NC}\n"
