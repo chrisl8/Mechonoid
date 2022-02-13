@@ -32,7 +32,7 @@ fi
 if ! [[ ${IS_RASPBERRY_PI} == "true" ]]; then
   printf "\n${YELLOW}This is ONLY meant to work on a Raspberry Pi!${NC}\n"
   printf "If you continue the install, expect problems!\n"
-  if ! [[ ${CI} == "true" ]]; then # Never ask questions in Travis test environment
+  if ! [[ ${CI} == "true" ]]; then # Never ask questions in test environment
     printf "${BRIGHT_WHITE}"
     read -n 1 -s -r -p "Do you want to continue? (y or n) " CONTINUE_ANYWAY
     printf "${NC}\n"
@@ -135,11 +135,15 @@ fi
 
 # The entire thing must run as root in order to access the GPIO pins,
 # so setting up root to do this
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | sudo bash
+printf "${BLUE}Installing Node Version Manager as root:${NC}\n"
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | sudo bash
+
+printf "${BLUE}Installing latest Node LTS version as root:${NC}\n"
 sudo bash -ic "nvm install --lts;true"
 sudo bash -ic "npm install pm2@latest -g;true"
 
 # We will do as much setup and such as we can locally though.
+printf "${BLUE}Installing Node Version Manager as ${USER}:${NC}\n"
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 export NVM_DIR="${HOME}/.nvm"
 # shellcheck source=/home/chrisl8/.nvm/nvm.sh
@@ -150,6 +154,8 @@ if ! (grep NVM_SYMLINK_CURRENT ~/.bashrc >/dev/null); then
   printf "\n${YELLOW}[Setting the NVM current environment in your .bashrc file]${NC}\n"
   sh -c "echo \"export NVM_SYMLINK_CURRENT=true\" >> ~/.bashrc"
 fi
+
+printf "${BLUE}Installing latest Node LTS version as ${USER}:${NC}\n"
 nvm install --lts
 nvm alias default node
 
@@ -190,7 +196,7 @@ fi
 
 if ! sudo test -e "/root/.robotAnything"; then
   printf "\n${YELLOW}[Creating config data link for root.]${NC}\n"
-  sudo ln -s "/home/${USER}/.robotAnything /root"
+  sudo ln -s "/home/${USER}/.robotAnything" /root
 fi
 
 if [[ -f ~/.bashrc ]]; then
