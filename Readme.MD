@@ -1,3 +1,5 @@
+[![Setup Script Test](https://github.com/chrisl8/RobotAnything/actions/workflows/setup.yml/badge.svg)](https://github.com/chrisl8/RobotAnything/actions/workflows/setup.yml)
+
 # Robot Anything
 
 ## Work in Progress
