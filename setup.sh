@@ -6,18 +6,17 @@ GIT_REPO_AND_FOLDER=RobotAnything
 
 set -e
 
-BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 #PURPLE='\033[0;35m'
 YELLOW='\033[1;33m'
-#LIGHTCYAN='\033[1;36m'
+LIGHTCYAN='\033[1;36m'
 #LIGHTBLUE='\033[1;34m'
 LIGHT_PURPLE='\033[1;35m'
 BRIGHT_WHITE='\033[1;97m'
 NC='\033[0m' # NoColor
 
-printf "\n${YELLOW}[Checking OS and Version]${NC}\n"
+printf "\n${YELLOW}[Checking Architecture, OS and Version]${NC}\n"
 if ! (grep "DISTRIB_ID=Ubuntu" /etc/lsb-release>/dev/null) || ! (grep "DISTRIB_RELEASE=20.04" /etc/lsb-release>/dev/null) || ! (grep "DISTRIB_CODENAME=focal" /etc/lsb-release>/dev/null); then
   printf "${RED}[This script will only work on Ubuntu Focal (20.04)!!]${NC}\n"
   printf "${RED}https://github.com/chrisl8/RobotAnything${NC}\n"
@@ -67,7 +66,7 @@ if [[ ${IS_RASPBERRY_PI} == "true" ]]; then
 fi
 
 printf "\n${YELLOW}[Installing additional Ubuntu and ROS Packages for RobotAnything]${NC}\n"
-printf "${BLUE}This runs every time, in case new packages were added.${NC}\n"
+printf "${LIGHTCYAN}This runs every time, in case new packages were added.${NC}\n"
 sudo apt install -y "${PACKAGE_TO_INSTALL_LIST[@]}"
 
 if ! (command -v pigpiod >/dev/null); then
@@ -100,7 +99,7 @@ fi
 printf "\n${YELLOW}[Cloning or Updating git repositories]${NC}\n"
 cd
 
-printf "${BLUE}${GIT_REPO_AND_FOLDER} repository${NC}\n"
+printf "${LIGHTCYAN}${GIT_REPO_AND_FOLDER} repository${NC}\n"
 if ! [[ -d ${HOME}/${GIT_REPO_AND_FOLDER} ]]; then
   git clone https://github.com/chrisl8/${GIT_REPO_AND_FOLDER}.git
 else
@@ -124,9 +123,8 @@ fi
 
 printf "\n${YELLOW}[Installing and Initializing the Current Node LTS version]${NC}\n"
 
-printf "${BLUE}[Installing/Updating Node Version Manager]${NC}\n"
 if [[ -e ${HOME}/.nvm/nvm.sh ]]; then
-  printf "${BLUE}Deactivating existing Node Version Manager:${NC}\n"
+  printf "\n${LIGHTCYAN}Deactivating existing Node Version Manager:${NC}\n"
   export NVM_DIR="${HOME}/.nvm"
   # shellcheck source=/home/chrisl8/.nvm/nvm.sh
   [[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh" # This loads nvm
@@ -135,15 +133,15 @@ fi
 
 # The entire thing must run as root in order to access the GPIO pins,
 # so setting up root to do this
-printf "${BLUE}Installing Node Version Manager as root:${NC}\n"
+printf "\n${LIGHTCYAN}Installing Node Version Manager as root:${NC}\n"
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | sudo bash
 
-printf "${BLUE}Installing latest Node LTS version as root:${NC}\n"
+printf "\n${LIGHTCYAN}Installing latest Node LTS version as root:${NC}\n"
 sudo bash -ic "nvm install --lts;true"
 sudo bash -ic "npm install pm2@latest -g;true"
 
 # We will do as much setup and such as we can locally though.
-printf "${BLUE}Installing Node Version Manager as ${USER}:${NC}\n"
+printf "\n${LIGHTCYAN}Installing Node Version Manager as ${USER}:${NC}\n"
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 export NVM_DIR="${HOME}/.nvm"
 # shellcheck source=/home/chrisl8/.nvm/nvm.sh
@@ -155,13 +153,13 @@ if ! (grep NVM_SYMLINK_CURRENT ~/.bashrc >/dev/null); then
   sh -c "echo \"export NVM_SYMLINK_CURRENT=true\" >> ~/.bashrc"
 fi
 
-printf "${BLUE}Installing latest Node LTS version as ${USER}:${NC}\n"
+printf "\n${LIGHTCYAN}Installing latest Node LTS version as ${USER}:${NC}\n"
 nvm install --lts
 nvm alias default node
 
 cd "${HOME}/${GIT_REPO_AND_FOLDER}/node"
 printf "\n${YELLOW}[Grabbing node dependencies for Node.js scripts]${NC}\n"
-printf "${BLUE}You may get some errors here, that is normal. As long as things work, it is OK.$NC\n"
+printf "${LIGHTCYAN}You may get some errors here, that is normal. As long as things work, it is OK.$NC\n"
 npm ci
 
 cd "${HOME}/${GIT_REPO_AND_FOLDER}/website"
