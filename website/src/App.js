@@ -24,17 +24,7 @@ const App = () => {
     // componentDidMount
     // https://medium.com/@felippenardi/how-to-do-componentdidmount-with-react-hooks-553ba39d1571
 
-    let newSocket;
-    if (window.location.hostname === 'localhost') {
-      // For remote control of Dalek1 when running React from laptop
-      // TODO: This IP shouldn't be on github in prod code,
-      //        but could we get this from the online robotwebservice?
-      //        or just delete this code and go back to manual hacking code when testing.
-      newSocket = openSocket(`http://192.168.1.49/`);
-    } else {
-      // Production
-      newSocket = openSocket();
-    }
+    const newSocket = openSocket();
     // For local testing on the robot:
     // const newSocket = openSocket(`http://${window.location.hostname}:8080`);
 
