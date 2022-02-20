@@ -130,8 +130,7 @@ class JoystickControl extends Component {
           });
           this.props.socket.emit('motor', {
             target: this.props.name,
-            value: linearSpeed,
-            angle: angularSpeed,
+            value: 0,
           });
         })
         .on('move', (evt, data) => {
