@@ -6,6 +6,7 @@
   "main": "index.js",
   "type": "module",
   "dependencies": {
+    "@serialport/bindings-cpp": "^10.6.3",
     "base-64": "^1.0.0",
     "es-main": "^1.0.2",
     "express": "^4.17.1",
@@ -14,7 +15,7 @@
     "pigpio": "^3.3.0",
     "pololu-maestro": "git+https://github.com/chrisl8/node-pololumaestro.git",
     "polycrc": "^1.0.1",
-    "serialport": "^9.0.4",
+    "serialport": "^10.3.0",
     "socket.io": "^4.0.0"
   },
   "devDependencies": {

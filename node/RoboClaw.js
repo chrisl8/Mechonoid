@@ -1,4 +1,4 @@
-import SerialPort from 'serialport';
+import { SerialPort } from 'serialport';
 import polycrc from 'polycrc';
 
 import wait from './wait.js';
@@ -138,9 +138,9 @@ class RoboClaw {
     // NOTE: When using packet serial commands via the USB connection the address byte can be any
     // value from 0x80 to 0x87 since each USB connection is already unique.
     this.address = 128;
-    this.serialPort = new SerialPort(comPort, {
+    this.serialPort = new SerialPort({
+      path: comPort,
       baudRate: 38400,
-      // autoOpen: false,
     });
 
     this.popAndSendCommandsCount = 0;
