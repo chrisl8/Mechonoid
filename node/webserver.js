@@ -32,7 +32,9 @@ function strippedRobotModel(inputRobotModel) {
 
 async function webserver() {
   /** @namespace robotModel.webServerPort */
-  const webServer = app.listen(robotModel.webServerPort);
+  const webServer = app.listen(
+    robotModel.webServerPort ? robotModel.webServerPort : 80,
+  );
   const io = new Server(webServer, {
     cors: {
       origin: 'http://localhost:3000',
