@@ -22,6 +22,8 @@ function convertTwistToMotorSpeeds({ motorName, twist }) {
   // in:
   // https://github.com/nobleo/roboclaw/blob/master/src/diffdrive_roscore.cpp
 
+  const newTwist = {};
+
   const stepsPerMeter =
     robotModel.motors[motorName].countsPerRevolution /
     (2 * robotModel.motors[motorName].wheelRadius * Math.PI);
@@ -31,8 +33,7 @@ function convertTwistToMotorSpeeds({ motorName, twist }) {
     mot2_vel_sps: 0,
   };
 
-  // eslint-disable-next-line no-param-reassign
-  twist.linearSpeed = convertNumberRange(
+  newTwist.linearSpeed = convertNumberRange(
     twist.linearSpeed,
     -100,
     100,
@@ -40,8 +41,7 @@ function convertTwistToMotorSpeeds({ motorName, twist }) {
     robotModel.motors[motorName].maxLinearSpeed,
   );
 
-  // eslint-disable-next-line no-param-reassign
-  twist.angularSpeed = convertNumberRange(
+  newTwist.angularSpeed = convertNumberRange(
     twist.angularSpeed,
     -100,
     100,
@@ -50,19 +50,19 @@ function convertTwistToMotorSpeeds({ motorName, twist }) {
   );
 
   // Linear
-  motorVel.mot1_vel_sps += stepsPerMeter * twist.linearSpeed;
-  motorVel.mot2_vel_sps += stepsPerMeter * twist.linearSpeed;
+  motorVel.mot1_vel_sps += stepsPerMeter * newTwist.linearSpeed;
+  motorVel.mot2_vel_sps += stepsPerMeter * newTwist.linearSpeed;
 
   // Angular
   motorVel.mot1_vel_sps += -(
     (stepsPerMeter *
-      twist.angularSpeed *
+      newTwist.angularSpeed *
       robotModel.motors[motorName].baseWidth) /
     2
   );
   motorVel.mot2_vel_sps +=
     (stepsPerMeter *
-      twist.angularSpeed *
+      newTwist.angularSpeed *
       robotModel.motors[motorName].baseWidth) /
     2;
 
@@ -85,18 +85,24 @@ function convertTwistToMotorSpeeds({ motorName, twist }) {
 
 let lastMotorName;
 let lastValue;
-let lastTwist;
+const lastTwist = {
+  linearSpeed: null,
+  angularSpeed: null,
+};
 
 const operateMotor = async ({ motorName, value, twist }) => {
   if (
     motorName !== lastMotorName ||
     value !== lastValue ||
-    twist !== lastTwist
+    (twist &&
+      (twist.linearSpeed !== lastTwist.linearSpeed ||
+        twist.angularSpeed !== lastTwist.angularSpeed))
   ) {
     lastMotorName = motorName;
     lastValue = value;
-    lastTwist = twist;
     if (typeof twist === 'object' && twist !== null) {
+      lastTwist.linearSpeed = twist.linearSpeed;
+      lastTwist.angularSpeed = twist.angularSpeed;
       // TODO: Convert incoming max/min speeds to those of the actual motor.
       // TODO: Get the max speed. I think I set it in the Roboclaw already?
       const motorVel = convertTwistToMotorSpeeds({ motorName, twist });
