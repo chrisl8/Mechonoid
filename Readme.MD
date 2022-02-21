@@ -8,13 +8,13 @@ This really isn't ready for public consumption yet.
 
 ## Target Hardware and Operating System
 
-This is intended to run on a Raspberry Pi 4 running **Ubuntu** MATE 20.04 (LTS).  I use the 4GB model, but you can try others at your own risk. 
+This is intended to run on a [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) running [**Ubuntu** MATE 20.04 (LTS)](https://ubuntu-mate.org/download/arm64/focal/).  I use the [4GB](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) model, but you can try others at your own risk. 
 
 The Pi is a very widely supported and readily available Single Board Computer (SBC) that runs efficiently on 5 volts that can be provided from a battery via step-down converters.
 
-I intend to use Robot Operating System (ROS) which requires Ubuntu, not Raspbian, to be easily installed.
+I intend to use [Robot Operating System (ROS)](https://www.ros.org/) which requires Ubuntu, not Raspbian, to be easily installed.
 
-ubuntuMATE provides a useful desktop environment that the default Ubuntu 20.04 for Pi does not. This GUI is especially helpful for getting WiFi and Bluetooth connections working.
+[Ubuntu MATE](https://ubuntu-mate.org/raspberry-pi/) provides a useful desktop environment that the default Ubuntu 20.04 for Pi does not. This GUI is especially helpful for getting WiFi and Bluetooth connections working.
 
 
 ## Raspberry Pi Setup
@@ -24,7 +24,7 @@ Follow the steps below:
 ### Install Ubuntu MATE 20.04 LTS
 
 1. Download the [64-bit Focal version of Ubuntu for Raspberry Pi](https://ubuntu-mate.org/download/arm64/focal/) 
-2. Follow the [ubuntuMATE Raspberry Pi Installation Guide](https://ubuntu-mate.org/raspberry-pi/install/) to install Ubuntu MATE 20.04 LTS.
+2. Follow the [Ubuntu MATE Raspberry Pi Installation Guide](https://ubuntu-mate.org/raspberry-pi/install/) to install Ubuntu MATE 20.04 LTS.
 
 ### Notes
  - Pick a Computer Name that you want your "robot" to be known by, as it will be seen and usd in the interface.
@@ -71,4 +71,4 @@ A rather complex example has been placed there to give a hint as to how to make 
 Other examples can be found with the names `configExample*.json`
 
 ## Attributions
-Dalek Icon by Tatyana Kyul from the Noun Project
+[Dalek Icon](https://thenounproject.com/icon/dalek-1472703/) by [Tatyana Kyul](https://thenounproject.com/kyul/) from the [Noun Project](https://thenounproject.com/).
