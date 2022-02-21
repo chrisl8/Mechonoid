@@ -41,6 +41,17 @@ if ! [[ ${IS_RASPBERRY_PI} == "true" ]]; then
   fi
 fi
 
+if ! (sudo -nl | grep "(ALL) NOPASSWD: ALL" >/dev/null); then
+  printf "\n${YELLOW}[Setting up ${USER} to run any command as root without password entry.]${NC}\n"
+  printf "${LIGHTCYAN}Remember, this is meant to run on a Pi on a robot.${NC}\n"
+  printf "${LIGHTCYAN}Without this the code cannot access hardware such as the GPIO pins.${NC}\n"
+  echo "${USER} ALL=(ALL) NOPASSWD:ALL" >/tmp/"${USER}"_sudoers
+  chmod 0440 /tmp/"${USER}"_sudoers
+  sudo chown root:root /tmp/"${USER}"_sudoers
+  sudo mv /tmp/"${USER}"_sudoers /etc/sudoers.d/"${USER}"
+  sudo chown root:root /etc/sudoers.d/"${USER}"
+fi
+
 printf "\n${YELLOW}[Updating & upgrading all existing Ubuntu packages]${NC}\n"
 sudo apt update
 sudo apt upgrade -y

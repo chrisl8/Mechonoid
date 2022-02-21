@@ -48,7 +48,13 @@ Follow the steps below:
      - After reboot open the terminal again.
 
 ## RobotAnywhere Install
-There is a script to install everything. Run:
+There is a script to install everything.
+
+**NOTE: This script gives your user access to run any command as root.**  
+In order to access hardware such as the GPIO pins, code must run as root.
+This is mean tto run on a Raspberry Pi on your robot, not a personal system with sensitive data on it.
+
+### Run:
 
 ```
 bash <(wget -qO- --no-cache -o /dev/null https://raw.githubusercontent.com/chrisl8/RobotAnything/original/setup.sh)
