@@ -149,6 +149,8 @@ wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | sudo
 
 printf "\n${LIGHTCYAN}Installing latest Node LTS version as root:${NC}\n"
 sudo bash -ic "nvm install --lts;true"
+
+printf "\n${LIGHTCYAN}Installing pm2 for running service as root:${NC}\n"
 sudo bash -ic "npm install pm2@latest -g;true"
 
 # We will do as much setup and such as we can locally though.
