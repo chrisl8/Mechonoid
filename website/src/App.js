@@ -159,7 +159,7 @@ const App = () => {
         </Header>
         <Content style={{ margin: '24px 16px 0' }}>{pageContent}</Content>
         <Footer style={{ textAlign: 'center' }}>
-          <a href="https://github.com/chrisl8/RobotAnything">Robot Anything</a>
+          <a href="https://github.com/chrisl8/Mechonoid">Robot Anything</a>
         </Footer>
       </Layout>
     </>

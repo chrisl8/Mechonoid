@@ -1,10 +1,14 @@
-[![Setup Script Test](https://github.com/chrisl8/RobotAnything/actions/workflows/setup.yml/badge.svg)](https://github.com/chrisl8/RobotAnything/actions/workflows/setup.yml)
+[![Setup Script Test](https://github.com/chrisl8/Mechonoid/actions/workflows/setup.yml/badge.svg)](https://github.com/chrisl8/Mechonoid/actions/workflows/setup.yml)
 
-# Robot Anything
+# Mechonoid
 
 ## Work in Progress
 
 This really isn't ready for public consumption yet.
+
+## Goal
+
+This framework of scripts, instructions, code, parts lists, and printable components will help you to easily build a mechanical "robot" of your own, complete with web interface and gamepad control.
 
 ## Target Hardware and Operating System
 
@@ -47,7 +51,7 @@ Follow the steps below:
      - Reboot either via the menus or `sudo reboot`
      - After reboot open the terminal again.
 
-## RobotAnywhere Install
+## Mechonoid Install
 There is a script to install everything.
 
 **NOTE: This script gives your user access to run any command as root.**  
@@ -57,10 +61,10 @@ This is mean tto run on a Raspberry Pi on your robot, not a personal system with
 ### Run:
 
 ```
-bash <(wget -qO- --no-cache -o /dev/null https://raw.githubusercontent.com/chrisl8/RobotAnything/original/setup.sh)
+bash <(wget -qO- --no-cache -o /dev/null https://raw.githubusercontent.com/chrisl8/Mechonoid/original/setup.sh)
 ```
 
-Be sure to read the instructions that the script will print at the end about editing the config files in `~/.RobotAnything/`
+Be sure to read the instructions that the script will print at the end about editing the config files in `~/.mechonoid/`
 
 **A reboot will be required after the first install.**
 
@@ -68,7 +72,7 @@ To update your code run the same script again, and it will pull down and compile
 
 ## Configuration
 
-The program is entirely dependent upon the configuration in ~/.robotAnywhere/config.json  
+The program is entirely dependent upon the configuration in `~/.mechonoid/config.json`.  
 
 You must edit this file to describe your robot.  
 
@@ -78,3 +82,5 @@ Other examples can be found with the names `configExample*.json`
 
 ## Attributions
 [Dalek Icon](https://thenounproject.com/icon/dalek-1472703/) by [Tatyana Kyul](https://thenounproject.com/kyul/) from the [Noun Project](https://thenounproject.com/).
+
+The name [Mechonoid](https://aliens.fandom.com/wiki/Mechonoid) is a reference to a robot from the classic Doctor Who episode [The Chase](https://en.wikipedia.org/wiki/The_Chase_(Doctor_Who)).

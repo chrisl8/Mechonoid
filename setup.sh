@@ -2,7 +2,8 @@
 # shellcheck disable=SC2059 disable=SC2129
 # Run this on you Raspberry Pi to make everything work!
 
-GIT_REPO_AND_FOLDER=RobotAnything
+GIT_REPO_AND_FOLDER=Mechonoid
+CONFIG_FOLDER_NAME=mechonoid
 
 set -e
 
@@ -19,7 +20,7 @@ NC='\033[0m' # NoColor
 printf "\n${YELLOW}[Checking Architecture, OS and Version]${NC}\n"
 if ! (grep "DISTRIB_ID=Ubuntu" /etc/lsb-release>/dev/null) || ! (grep "DISTRIB_RELEASE=20.04" /etc/lsb-release>/dev/null) || ! (grep "DISTRIB_CODENAME=focal" /etc/lsb-release>/dev/null); then
   printf "${RED}[This script will only work on Ubuntu Focal (20.04)!!]${NC}\n"
-  printf "${RED}https://github.com/chrisl8/RobotAnything${NC}\n"
+  printf "${RED}https://github.com/chrisl8/${GIT_REPO_AND_FOLDER}${NC}\n"
   exit 1
 fi
 
@@ -76,7 +77,7 @@ if [[ ${IS_RASPBERRY_PI} == "true" ]]; then
   #libraspberrypi-bin provides extra commands for working with the Raspberry Pi specifically.
 fi
 
-printf "\n${YELLOW}[Installing additional Ubuntu and ROS Packages for RobotAnything]${NC}\n"
+printf "\n${YELLOW}[Installing additional Ubuntu and ROS Packages for ${GIT_REPO_AND_FOLDER}]${NC}\n"
 printf "${LIGHTCYAN}This runs every time, in case new packages were added.${NC}\n"
 sudo apt install -y "${PACKAGE_TO_INSTALL_LIST[@]}"
 
@@ -189,37 +190,37 @@ if ! (crontab -l >/dev/null 2>&1) || ! (crontab -l | grep startService >/dev/nul
   ) | crontab -
 fi
 
-if ! [[ -d ${HOME}/.robotAnything ]]; then
+if ! [[ -d ${HOME}/.${CONFIG_FOLDER_NAME} ]]; then
   printf "\n${YELLOW}[Creating config folder.]${NC}\n"
   cd
-  mkdir .robotAnything
+  mkdir .${CONFIG_FOLDER_NAME}
 fi
 
 NEW_CONFIG=0
 
-if ! [[ -f ${HOME}/.robotAnything/config.json ]]; then
+if ! [[ -f ${HOME}/.${CONFIG_FOLDER_NAME}/config.json ]]; then
   NEW_CONFIG=1
   printf "\n${YELLOW}[Creating example config data.]${NC}\n"
-  cd "${HOME}/.robotAnything"
+  cd "${HOME}/.${CONFIG_FOLDER_NAME}"
   cp "${HOME}/${GIT_REPO_AND_FOLDER}/configExample.json" config.json
   cd
 fi
 
-if ! sudo test -e "/root/.robotAnything"; then
+if ! sudo test -e "/root/.${CONFIG_FOLDER_NAME}"; then
   printf "\n${YELLOW}[Creating config data link for root.]${NC}\n"
-  sudo ln -s "/home/${USER}/.robotAnything" /root
+  sudo ln -s "/home/${USER}/.${CONFIG_FOLDER_NAME}" /root
 fi
 
 if [[ -f ~/.bashrc ]]; then
   if ! (grep "${GIT_REPO_AND_FOLDER}" ~/.bashrc >/dev/null); then
-    printf "\n${YELLOW}[Adding RobotAnything Scripts folder to your path in .bashrc]${NC}\n"
+    printf "\n${YELLOW}[Adding ${GIT_REPO_AND_FOLDER} Scripts folder to your path in .bashrc]${NC}\n"
     sh -c "echo \"export PATH=\\\$PATH:${HOME}/${GIT_REPO_AND_FOLDER}\" >> ~/.bashrc"
   fi
 fi
 
 if [[ -f ~/.zshrc ]]; then
   if ! (grep "${GIT_REPO_AND_FOLDER}" ~/.zshrc >/dev/null); then
-    printf "\n${YELLOW}[Adding RobotAnything Scripts folder to your path in .zshrc]${NC}\n"
+    printf "\n${YELLOW}[Adding ${GIT_REPO_AND_FOLDER} Scripts folder to your path in .zshrc]${NC}\n"
     sh -c "echo \"export PATH=\\\$PATH:${HOME}/${GIT_REPO_AND_FOLDER}\" >> ~/.zshrc"
   fi
 fi
@@ -231,6 +232,6 @@ sudo bash -ic "pm2 update;true"
 
 if [[ ${NEW_CONFIG} == "1" ]]; then
   printf "\n${LIGHT_PURPLE}NOTICE NOTICE NOTICE NOTICE${NC}\n"
-  printf "\n${LIGHT_PURPLE}You MUST edit ${HOME}/.robotAnything/config.json${NC}\n"
+  printf "\n${LIGHT_PURPLE}You MUST edit ${HOME}/.${CONFIG_FOLDER_NAME}/config.json${NC}\n"
   printf "\n${LIGHT_PURPLE}It has been set up with example data that will not work for your robot.${NC}\n"
 fi
