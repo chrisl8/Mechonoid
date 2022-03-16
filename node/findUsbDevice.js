@@ -4,14 +4,19 @@ const findUsbDevice = async ({
   logName,
   uniqueDeviceString,
   stringLocation,
+  squelchLogging,
 }) => {
-  console.log(`Finding ${logName}...`);
+  if (!squelchLogging) {
+    console.log(`Finding ${logName || uniqueDeviceString}...`);
+  }
   const usbDevice = new UsbDevice(uniqueDeviceString, stringLocation);
   let usbDeviceName;
   try {
     usbDeviceName = await usbDevice.findDeviceName();
   } catch (e) {
-    console.error(`Failed to find ${logName}.`);
+    if (!squelchLogging) {
+      console.error(`Failed to find ${logName || uniqueDeviceString}.`);
+    }
   }
   return usbDeviceName;
 };

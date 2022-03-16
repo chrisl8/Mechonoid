@@ -24,6 +24,12 @@ if ! (grep "DISTRIB_ID=Ubuntu" /etc/lsb-release>/dev/null) || ! (grep "DISTRIB_R
   exit 1
 fi
 
+if ! [[ ${USER} == "root" ]]; then
+  printf "${RED}[This script must not be run as root]${NC}\n"
+  printf "${RED}exit root back to your normal user and try again.${NC}\n"
+  exit 1
+fi
+
 IS_RASPBERRY_PI=false
 if (grep "Raspberry Pi" /proc/cpuinfo>/dev/null); then
   IS_RASPBERRY_PI=true
@@ -69,6 +75,8 @@ PACKAGE_TO_INSTALL_LIST+=(build-essential)
 #build-essential includes things like make and libraries required to build the GPIO tools
 PACKAGE_TO_INSTALL_LIST+=(openssh-server)
 #openssh-server is helpful for remotely controlling the Raspberry Pi
+PACKAGE_TO_INSTALL_LIST+=(joystick)
+#joystick For remote control!
 
 if [[ ${IS_RASPBERRY_PI} == "true" ]]; then
   PACKAGE_TO_INSTALL_LIST+=(rpi.gpio-common)
@@ -198,11 +206,11 @@ fi
 
 NEW_CONFIG=0
 
-if ! [[ -f ${HOME}/.${CONFIG_FOLDER_NAME}/config.json ]]; then
+if ! [[ -f ${HOME}/.${CONFIG_FOLDER_NAME}/config.json5 ]]; then
   NEW_CONFIG=1
   printf "\n${YELLOW}[Creating example config data.]${NC}\n"
   cd "${HOME}/.${CONFIG_FOLDER_NAME}"
-  cp "${HOME}/${GIT_REPO_AND_FOLDER}/configExample.json" config.json
+  cp "${HOME}/${GIT_REPO_AND_FOLDER}/configExample.json5" config.json5
   cd
 fi
 
@@ -232,6 +240,6 @@ sudo bash -ic "pm2 update;true"
 
 if [[ ${NEW_CONFIG} == "1" ]]; then
   printf "\n${LIGHT_PURPLE}NOTICE NOTICE NOTICE NOTICE${NC}\n"
-  printf "\n${LIGHT_PURPLE}You MUST edit ${HOME}/.${CONFIG_FOLDER_NAME}/config.json${NC}\n"
+  printf "\n${LIGHT_PURPLE}You MUST edit ${HOME}/.${CONFIG_FOLDER_NAME}/config.json5${NC}\n"
   printf "\n${LIGHT_PURPLE}It has been set up with example data that will not work for your robot.${NC}\n"
 fi

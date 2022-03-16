@@ -9,8 +9,14 @@ import configData from './configData.js';
 // and they don't need to update the web site anyway.
 const hardwareFunctions = _.cloneDeep(configData.hardwareControllers);
 
+// The joystick functions are not interesting to the web site,
+// and further they can store data that udpates too much for sending
+// to the web site continuously.
+const joystickConfigurations = _.cloneDeep(configData.joysticks);
+
 const robotModel = _.cloneDeep(configData);
 delete robotModel.hardwareControllers;
+delete robotModel.joystick;
 
 robotModel.status = 'Online';
 
@@ -50,6 +56,7 @@ const updateRobotModel = () => {
 export {
   robotModel,
   hardwareFunctions,
+  joystickConfigurations,
   robotModelEmitter,
   updateRobotModelData,
   updateRobotModel,

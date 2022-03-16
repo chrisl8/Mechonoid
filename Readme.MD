@@ -35,7 +35,7 @@ Follow the steps below:
  - **I suggest setting "Log in automatically"** to make the robot easier to work with.
    - Just don't store sensitive information on this device.
  - I also suggest not making the login password overly complex, as you may need to use it in the field. Again, this isn't a place to keep your private data.
- - The install can stall for a **long time** at `waiting for unattended-upgr to exit`. Just wait it out.
+ - The install can stall for a **long time, LIKE HOURS** at `waiting for unattended-upgr to exit`. Just walk away from it and wait it out.
 
 #### After Install and Boot
  - UN-check "Open Welcome when I log on." and Close the "Welcome" window.
@@ -45,11 +45,7 @@ Follow the steps below:
      - I also suggest setting Screensaver theme to "Blank screen"
  - Open up a Terminal (Menu -> System Tools -> MATE Terminal)
    - You can expand the Terminal window to fill the screen with F11 if you like 
-   - If you didn't already during the install, install updates:
-     - `sudo apt update`
-     - `sudo apt upgrade`
-     - Reboot either via the menus or `sudo reboot`
-     - After reboot open the terminal again.
+   - See the next step, "Mechonoid Install" for what to do next...
 
 ## Mechonoid Install
 There is a script to install everything.
@@ -72,13 +68,11 @@ To update your code run the same script again, and it will pull down and compile
 
 ## Configuration
 
-The program is entirely dependent upon the configuration in `~/.mechonoid/config.json`.  
+The program is entirely dependent upon the configuration in `~/.mechonoid/config.json5`.  
 
 You must edit this file to describe your robot.  
 
 A rather complex example has been placed there to give a hint as to how to make it work.
-
-Other examples can be found with the names `configExample*.json`
 
 ## Attributions
 [Dalek Icon](https://thenounproject.com/icon/dalek-1472703/) by [Tatyana Kyul](https://thenounproject.com/kyul/) from the [Noun Project](https://thenounproject.com/).
