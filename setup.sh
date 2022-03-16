@@ -18,20 +18,22 @@ BRIGHT_WHITE='\033[1;97m'
 NC='\033[0m' # NoColor
 
 printf "\n${YELLOW}[Checking Architecture, OS and Version]${NC}\n"
-if ! (grep "DISTRIB_ID=Ubuntu" /etc/lsb-release>/dev/null) || ! (grep "DISTRIB_RELEASE=20.04" /etc/lsb-release>/dev/null) || ! (grep "DISTRIB_CODENAME=focal" /etc/lsb-release>/dev/null); then
+if ! (grep "DISTRIB_ID=Ubuntu" /etc/lsb-release >/dev/null) || ! (grep "DISTRIB_RELEASE=20.04" /etc/lsb-release >/dev/null) || ! (grep "DISTRIB_CODENAME=focal" /etc/lsb-release >/dev/null); then
   printf "${RED}[This script will only work on Ubuntu Focal (20.04)!!]${NC}\n"
   printf "${RED}https://github.com/chrisl8/${GIT_REPO_AND_FOLDER}${NC}\n"
   exit 1
 fi
 
-if ! [[ ${USER} == "root" ]]; then
-  printf "${RED}[This script must not be run as root]${NC}\n"
-  printf "${RED}exit root back to your normal user and try again.${NC}\n"
-  exit 1
+if ! [[ ${CI} == "true" ]]; then # CI does run as root.
+  if ! [[ ${USER} == "root" ]]; then
+    printf "${RED}[This script must not be run as root]${NC}\n"
+    printf "${RED}exit root back to your normal user and try again.${NC}\n"
+    exit 1
+  fi
 fi
 
 IS_RASPBERRY_PI=false
-if (grep "Raspberry Pi" /proc/cpuinfo>/dev/null); then
+if (grep "Raspberry Pi" /proc/cpuinfo >/dev/null); then
   IS_RASPBERRY_PI=true
 fi
 
