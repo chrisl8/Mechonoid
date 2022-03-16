@@ -12,8 +12,12 @@ This framework of scripts, instructions, code, parts lists, and printable compon
 
 ## Target Hardware and Operating System
 
-This is intended to run on a [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) running [**Ubuntu** MATE 20.04 (LTS)](https://ubuntu-mate.org/download/arm64/focal/).  I use the [4GB](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) model, but you can try others at your own risk.  
- - I have **not** found that the 8GB model provides any benefit.
+This is intended to run on a [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) running [**Ubuntu** MATE 20.04 (LTS)](https://ubuntu-mate.org/download/arm64/focal/).  I use the [4GB](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) model, but you can try others at your own risk.
+ - Memory:
+   - I have **not** found that the 8GB model provides any benefit.
+   - I have **not** experimented much with a 2GB model. It may work, but I don't know.
+ - CPU:
+   - I believe that the Pi 3 will struggle to keep up with the demands of ROS and continuous serial data transfer and processing, but I have not personally tested it.
  - The instructions will all focus on Ubuntu MATE, but the more generic "Ubuntu Server 20.04 LTS" for Raspberry Pi 4 should also work. File an issue if you discover problems making it work, or want to help improve the instructions.
 
 The Pi is a very widely supported and readily available Single Board Computer (SBC) that runs efficiently on 5 volts that can be provided from a battery via step-down converters.

@@ -25,7 +25,7 @@ if ! (grep "DISTRIB_ID=Ubuntu" /etc/lsb-release >/dev/null) || ! (grep "DISTRIB_
 fi
 
 if [[ ${USER} == "root" ]]; then
-  printf "${RED}[This script must not be run as root]${NC}\n"
+  printf "\n${RED}[This script must not be run as root]${NC}\n"
   printf "${RED}exit root back to your normal user and try again.${NC}\n"
   exit 1
 fi
