@@ -24,12 +24,10 @@ if ! (grep "DISTRIB_ID=Ubuntu" /etc/lsb-release >/dev/null) || ! (grep "DISTRIB_
   exit 1
 fi
 
-if ! [[ ${CI} == "true" ]]; then # CI does run as root.
-  if ! [[ ${USER} == "root" ]]; then
-    printf "${RED}[This script must not be run as root]${NC}\n"
-    printf "${RED}exit root back to your normal user and try again.${NC}\n"
-    exit 1
-  fi
+if [[ ${USER} == "root" ]]; then
+  printf "${RED}[This script must not be run as root]${NC}\n"
+  printf "${RED}exit root back to your normal user and try again.${NC}\n"
+  exit 1
 fi
 
 IS_RASPBERRY_PI=false
