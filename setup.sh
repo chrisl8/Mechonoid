@@ -17,7 +17,7 @@ LIGHT_PURPLE='\033[1;35m'
 BRIGHT_WHITE='\033[1;97m'
 NC='\033[0m' # NoColor
 
-printf "\n${YELLOW}[Checking Architecture, OS and Version]${NC}\n"
+printf "\n${YELLOW}[Checking Architecture, OS and Version]${NC}\n\n"
 if ! (grep "DISTRIB_ID=Ubuntu" /etc/lsb-release >/dev/null) || ! (grep "DISTRIB_RELEASE=20.04" /etc/lsb-release >/dev/null) || ! (grep "DISTRIB_CODENAME=focal" /etc/lsb-release >/dev/null); then
   printf "${RED}[This script will only work on Ubuntu Focal (20.04)!!]${NC}\n"
   printf "${RED}https://github.com/chrisl8/${GIT_REPO_AND_FOLDER}${NC}\n"
@@ -52,6 +52,10 @@ if ! (sudo -nl | grep "(ALL) NOPASSWD: ALL" >/dev/null); then
   printf "\n${YELLOW}[Setting up ${USER} to run any command as root without password entry.]${NC}\n"
   printf "${LIGHTCYAN}Remember, this is meant to run on a Pi on a robot.${NC}\n"
   printf "${LIGHTCYAN}Without this the code cannot access hardware such as the GPIO pins.${NC}\n"
+  # Sometimes an old version gets left over and breaks future code runs.
+  if [[ -e /tmp/"${USER}"_sudoers ]]; then
+    sudo rm /tmp/"${USER}"_sudoers
+  fi
   echo "${USER} ALL=(ALL) NOPASSWD:ALL" >/tmp/"${USER}"_sudoers
   chmod 0440 /tmp/"${USER}"_sudoers
   sudo chown root:root /tmp/"${USER}"_sudoers
