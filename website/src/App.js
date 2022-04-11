@@ -24,9 +24,15 @@ const App = () => {
     // componentDidMount
     // https://medium.com/@felippenardi/how-to-do-componentdidmount-with-react-hooks-553ba39d1571
 
-    const newSocket = openSocket();
+    const newSocket = openSocket({
+      transports: ['websocket'],
+    });
     // For local testing on the robot:
     // const newSocket = openSocket(`http://${window.location.hostname}:8080`);
+    // For testing testing on my laptop with remote robot:
+    // const newSocket = openSocket(`http://192.168.1.122`, {
+    //   transports: ['websocket'],
+    // });
 
     setSocket(newSocket);
 
