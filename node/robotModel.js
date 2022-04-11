@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { EventEmitter } from 'events';
 
-import configData from './configData.js';
+import { configData } from './configData.js';
 
 // TODO: Front end should indicate the in between positions of rotating parts.
 

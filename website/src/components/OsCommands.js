@@ -11,6 +11,11 @@ const OsCommands = (props) => (
       <Col style={{ margin: 8 }}>
         <Button onClick={props.handleShutdownButton}>Shutdown</Button>
       </Col>
+      <Col style={{ margin: 8 }}>
+        <Button onClick={props.handleRestartServerButton}>
+          Restart Server
+        </Button>
+      </Col>
     </Row>
     <Row>
       <Col>

@@ -1,4 +1,5 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import { Server } from 'socket.io';
 // https://stackoverflow.com/a/64383997/4982408
 import { fileURLToPath } from 'url';
@@ -9,6 +10,8 @@ import operateMotor from './operateMotor.js';
 import sendServoToLocationUsingSwitches from './sendServoToLocationUsingSwitches.js';
 import shutDown from './shutDown.js';
 import { robotModel, robotModelEmitter } from './robotModel.js';
+import ipAddress from './ipAddress.js';
+import { readConfigFile, saveConfigFile } from './configData.js';
 
 // https://stackoverflow.com/a/64383997/4982408
 const fileName = fileURLToPath(import.meta.url);
@@ -18,6 +21,9 @@ const app = express();
 
 // All web content is housed in the website folder
 app.use(express.static(`${dirName}/../website/build`));
+
+// parse application/json
+app.use(bodyParser.json());
 
 // TODO: Track if a move command HAS come in from a client, has not been zeroed, and they disconnect, so we can stop it.
 
@@ -79,6 +85,20 @@ async function webserver() {
     res.sendStatus(200);
   });
 
+  app.get('/rawConfigFile', (req, res) => {
+    res.send(readConfigFile());
+  });
+
+  app.post('/updateConfigFile', (req, res) => {
+    try {
+      saveConfigFile(req.body.text);
+      res.sendStatus(200);
+    } catch (error) {
+      res.status(500);
+      res.send(error.message);
+    }
+  });
+
   // Socket listeners
   io.on('connection', (socket) => {
     const address = socket.request.connection.remoteAddress;
@@ -138,10 +158,17 @@ async function webserver() {
       shutDown({ reboot: false });
     });
 
+    socket.on('restartServer', () => {
+      console.log('Server restart requested from web interface.');
+      process.exit();
+    });
+
     socket.on('disconnect', () => {
       console.log('user disconnected');
     });
   });
+
+  console.log(`Web server is running at: http://${ipAddress()}`);
 }
 
 export default webserver;

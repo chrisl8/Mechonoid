@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import openSocket from 'socket.io-client';
 import { Layout, Row, Col, Button } from 'antd';
+import { isEmpty } from 'lodash';
 import './App.css';
 import Headers from './components/Headers';
 import ApiDocumentation from './components/ApiDocumentation';
@@ -8,6 +9,8 @@ import OsCommands from './components/OsCommands';
 import ServoController from './components/ServoController';
 import MotorController from './components/MotorController';
 import HardwareControllerStats from './components/hardwareControllerStats';
+import EditConfigFile from './components/EditConfigFile';
+import ConfigFileError from './components/ConfigFileError';
 
 const { Header, Content, Footer } = Layout;
 
@@ -19,6 +22,7 @@ const App = () => {
   });
   const [showApi, setShowApi] = useState(false);
   const [showOsCommands, setShowOsCommands] = useState(false);
+  const [showEditConfigFile, setShowEditConfigFile] = useState(false);
 
   useEffect(() => {
     // componentDidMount
@@ -60,6 +64,10 @@ const App = () => {
     setShowOsCommands(!showOsCommands);
   };
 
+  const handleEditConfigFileButton = () => {
+    setShowEditConfigFile(!showEditConfigFile);
+  };
+
   const handleRebootButton = () => {
     if (socket) {
       socket.emit('reboot');
@@ -69,6 +77,12 @@ const App = () => {
   const handleShutdownButton = () => {
     if (socket) {
       socket.emit('shutdown');
+    }
+  };
+
+  const handleRestartServerButton = () => {
+    if (socket) {
+      socket.emit('restartServer');
     }
   };
 
@@ -88,12 +102,38 @@ const App = () => {
           handleRebootButton={handleRebootButton}
           handleShutdownButton={handleShutdownButton}
           handleOsCommandsButton={handleOsCommandsButton}
+          handleRestartServerButton={handleRestartServerButton}
+        />
+      );
+    } else if (showEditConfigFile) {
+      pageContent = (
+        <EditConfigFile
+          robotModel={robotModel}
+          handleEditConfigFileButton={handleEditConfigFileButton}
+          handleRestartServerButton={handleRestartServerButton}
         />
       );
     } else {
       // TODO: Add button to home/center all servos.
       pageContent = (
         <>
+          {robotModel.error && (
+            <>
+              <ConfigFileError robotModel={robotModel} />
+              <Row>
+                <Col style={{ margin: 8 }}>
+                  <Button onClick={handleRestartServerButton}>
+                    Restart Server
+                  </Button>
+                </Col>
+                <Col style={{ margin: 8 }}>
+                  <Button onClick={handleEditConfigFileButton}>
+                    Edit Config File
+                  </Button>
+                </Col>
+              </Row>
+            </>
+          )}
           {robotModel.hardware &&
             robotModel.motors &&
             Object.keys(robotModel.motors).length > 0 && (
@@ -112,7 +152,7 @@ const App = () => {
                 hardware={robotModel.hardware}
               />
             )}
-          {robotModel.hardware && (
+          {Boolean(robotModel.hardware && !isEmpty(robotModel.hardware)) && (
             <Row>
               <Col style={{ margin: 8 }}>
                 <div style={{ textAlign: 'center', fontWeight: 'bold' }}>
@@ -122,26 +162,46 @@ const App = () => {
               </Col>
             </Row>
           )}
-          {/* TODO: Only show this if the robot has lights. */}
+          {Boolean(robotModel.hasLEDs) && (
+            <Row>
+              <Col style={{ margin: 8 }}>
+                <Button onClick={handleLightsButton}>Lights</Button>
+              </Col>
+            </Row>
+          )}
           <Row>
-            <Col style={{ margin: 8 }}>
-              <Button onClick={handleLightsButton}>Lights</Button>
+            <Col style={{ width: '100%' }}>
+              <hr />
             </Col>
           </Row>
+          {robotModel.hardware &&
+            robotModel.servos &&
+            Object.keys(robotModel.servos).length > 0 && (
+              <Row>
+                <Col style={{ margin: 8 }}>
+                  <p>
+                    Servo 360 sliders control speed and snap to 0 (stopped) when
+                    you let go.
+                    <br />
+                    Servo sliders control absolute position of the servo and
+                    stay put when released.
+                  </p>
+                </Col>
+              </Row>
+            )}
           <Row>
             <Col style={{ margin: 8 }}>
-              <hr />
-              <p>
-                Servo 360 sliders control speed and snap to 0 (stopped) when you
-                let go.
-                <br />
-                Servo sliders control absolute position of the servo and stay
-                put when released.
-              </p>
               <Button onClick={handleApiDocumentationButton}>
                 API Documentation
               </Button>
+            </Col>
+            <Col style={{ margin: 8 }}>
               <Button onClick={handleOsCommandsButton}>OS Commands</Button>
+            </Col>
+            <Col style={{ margin: 8 }}>
+              <Button onClick={handleEditConfigFileButton}>
+                Edit Config File
+              </Button>
             </Col>
           </Row>
         </>
@@ -158,14 +218,19 @@ const App = () => {
             {robotModel.robotName}
             {robotModel.status === 'Offline' && (
               <span>
-                &nbsp;-&nbsp;<strong>The Robot is OFFLINE!</strong>
+                <strong>The Robot is OFFLINE!</strong>
+              </span>
+            )}
+            {robotModel.error && (
+              <span>
+                <strong>Config File Error!</strong>
               </span>
             )}
           </span>
         </Header>
         <Content style={{ margin: '24px 16px 0' }}>{pageContent}</Content>
         <Footer style={{ textAlign: 'center' }}>
-          <a href="https://github.com/chrisl8/Mechonoid">Robot Anything</a>
+          <a href="https://github.com/chrisl8/Mechonoid">Mechonoid</a>
         </Footer>
       </Layout>
     </>

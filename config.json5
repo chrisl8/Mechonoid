@@ -1,0 +1,461 @@
+{
+  robotName: 'Dalek Two',
+  webServerPort: 80,
+  cloudServer: {
+    exists: true,
+    address: 'https://robots.ekpyroticfrood.net/',
+    password: 'fCGHzRfglK1XfKd01Cq2ry0O',
+  },
+  hardwareControllers: {
+    roboClawOne: {
+      type: 'RoboClaw',
+      logName: 'RoboClaw',
+      stringLocation: 'ID_MODEL',
+      uniqueDeviceString: 'USB_Roboclaw_2x7A',
+      minVoltage: 11.7,
+      maxCurrent: 3.5,
+    },
+    maestroBoardOne: {
+      type: 'Maestro',
+      logName: 'Maestro Board',
+      uniqueDeviceString: 'Pololu_Mini_Maestro_12-Channel_USB_Servo_Controller',
+      stringLocation: 'ID_MODEL',
+    },
+  },
+  motors: {
+    dualSpeed: {
+      hardwareController: 'roboClawOne',
+      type: 'speed',
+      channel: 'dual',
+      off: 0,
+      maximum: 127,
+      minimum: -127,
+      lastValue: 0,
+      mountedBackwards: true,
+    },
+    individualSpeedMotorRight: {
+      hardwareController: 'roboClawOne',
+      type: 'speed',
+      channel: 1,
+      off: 0,
+      maximum: 127,
+      minimum: -127,
+      lastValue: 0,
+      mountedBackwards: true,
+    },
+    individualSpeedMotorLeft: {
+      hardwareController: 'roboClawOne',
+      type: 'speed',
+      channel: 2,
+      off: 0,
+      maximum: 127,
+      minimum: -127,
+      lastValue: 0,
+      mountedBackwards: true,
+    },
+    motivator: {
+      hardwareController: 'roboClawOne',
+      type: 'differentialSpeed',
+      channel: 'dual',
+      off: 0,
+      maximum: 127,
+      minimum: -127,
+      lastValue: 0,
+      reversed: true,
+      mountedBackwards: true,
+      maxLinearSpeed: 0.5,
+      maxAngularSpeed: 0.75,
+      baseWidth: 0.66,
+      countsPerRevolution: 9600,
+      wheelRadius: 0.1,
+    },
+  },
+  servos: {
+    eyeStalk: {
+      hardwareController: 'maestroBoardOne',
+      channel: 0,
+      type: 180,
+      minimum: 2000,
+      maximum: 10000,
+      center: 5800,
+      off: 0,
+      lastValue: 0,
+      vertical: true,
+    },
+    leftArmVertical: {
+      hardwareController: 'maestroBoardOne',
+      channel: 3,
+      type: 180,
+      minimum: 10000,
+      maximum: 5000,
+      center: 5800,
+      off: 0,
+      lastValue: 0,
+      vertical: true,
+    },
+    leftArmHorizontal: {
+      hardwareController: 'maestroBoardOne',
+      channel: 4,
+      type: 180,
+      minimum: 2000,
+      maximum: 10000,
+      center: 5800,
+      off: 0,
+      lastValue: 0,
+    },
+    rightArmVertical: {
+      hardwareController: 'maestroBoardOne',
+      channel: 5,
+      type: 180,
+      minimum: 2000,
+      maximum: 7000,
+      center: 5800,
+      off: 0,
+      lastValue: 0,
+      vertical: true,
+    },
+    rightArmHorizontal: {
+      hardwareController: 'maestroBoardOne',
+      channel: 6,
+      type: 180,
+      minimum: 2000,
+      maximum: 10000,
+      center: 5800,
+      off: 0,
+      lastValue: 0,
+    },
+    head: {
+      trulyContinuous: true,
+      hardwareController: 'maestroBoardOne',
+      channel: 1,
+      type: 360,
+      minimum: 3200,
+      maximum: 8000,
+      center: 5800,
+      off: 0,
+      switchClosed: {
+        front: false,
+        left: false,
+        back: false,
+        right: false,
+      },
+      lastValue: 0,
+      locationPoints: null,
+      stopOnArrival: null,
+    },
+    shoulders: {
+      hardwareController: 'maestroBoardOne',
+      channel: 2,
+      type: 360,
+      minimum: 3200,
+      maximum: 8000,
+      center: 5800,
+      off: 0,
+      switchClosed: {
+        left: false,
+        center: false,
+        right: false,
+      },
+      lastValue: 0,
+      centerOffset: null,
+      stopOnArrival: null,
+    },
+  },
+  gpioPins: [
+    {
+      pin: 26,
+      location: 'shoulders',
+      entry: 'left',
+      operations: ['stopIfLessThanZero', 'rectifyCenterOffset'],
+    },
+    {
+      pin: 19,
+      location: 'shoulders',
+      entry: 'center',
+      operations: ['setCenterOffset'],
+    },
+    {
+      pin: 13,
+      location: 'shoulders',
+      entry: 'right',
+      operations: ['stopIfGreaterThanZero', 'rectifyCenterOffset'],
+    },
+    {
+      pin: 12,
+      location: 'head',
+      entry: 'front',
+      operations: ['setPositionInteger'],
+    },
+    {
+      pin: 16,
+      location: 'head',
+      entry: 'right',
+      operations: ['setPositionInteger'],
+    },
+    {
+      pin: 20,
+      location: 'head',
+      entry: 'back',
+      operations: ['setPositionInteger'],
+    },
+    {
+      pin: 21,
+      location: 'head',
+      entry: 'left',
+      operations: ['setPositionInteger'],
+    },
+  ],
+  joysticks: [
+    {
+      // run jstest and put the name found after "Joystick" here:
+      name: 'Xbox Wireless Controller', // From jstest output
+      deadZone: 150, // 1500
+      sensitivity: 100, // 350
+      /*
+      Axis Inputs is an array. 
+      Each axis can have multiple entries,
+      typically a 'onlyActiveWhenButtonPressed' is used to determine when
+      a given entry is active, but nothing prevents many from
+      being active at once.
+      */
+      axisInputs: [
+        {
+          number: 0, // Left analog thumb-stick left/right
+          outputType: 'twist',
+          motorName: 'motivator',
+          angularOrLinearSpeed: 'angularSpeed',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 6, // Left Shoulder
+        },
+        {
+          number: 1, // Left analog thumb-stick up/down
+          outputType: 'twist',
+          motorName: 'motivator',
+          angularOrLinearSpeed: 'linearSpeed',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 6, // Left Shoulder
+        },
+        {
+          number: 5, // Left trigger
+          outputType: 'pseudoButton',
+          falseIfExactly: -32767,
+          trueIfGreaterThan: -32767,
+        },
+        {
+          number: 4, // Right trigger
+          outputType: 'pseudoButton',
+          falseIfExactly: -32767,
+          trueIfGreaterThan: -32767,
+        },
+        {
+          number: 2, // Right analog thumb-stick left/right
+          outputType: 'servo',
+          motorName: 'rightArmHorizontal',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 4, // Right Trigger
+          allowZeroWhileActive: false, // Zero is off for a servo, not "center".
+        },
+        {
+          number: 3, // Right analog thumb-stick up/down
+          outputType: 'servo',
+          motorName: 'rightArmVertical',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 4, // Right Trigger
+          allowZeroWhileActive: false, // Zero is off for a servo, not "center".
+        },
+        {
+          number: 0, // Left analog thumb-stick left/right
+          outputType: 'servo',
+          motorName: 'leftArmHorizontal',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 5, // Left Trigger
+          allowZeroWhileActive: false, // Zero is off for a servo, not "center".
+        },
+        {
+          number: 1, // Left analog thumb-stick up/down
+          outputType: 'servo',
+          motorName: 'leftArmVertical',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 5, // Left Trigger
+          allowZeroWhileActive: false, // Zero is off for a servo, not "center".
+        },
+        {
+          number: 3, // Right analog thumb-stick up/down
+          outputType: 'servo',
+          motorName: 'eyeStalk',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 7, // Right Shoulder
+          allowZeroWhileActive: false, // Zero is off for a servo, not "center".
+        },
+        {
+          number: 7, // d-pad up
+          outputType: 'pseudoButton',
+          trueIfExactly: -32767,
+          falseIfGreaterThan: -32767,
+        },
+        {
+          number: 2, // Right analog thumb-stick left/right
+          outputType: 'servo360',
+          motorName: 'head',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 7, // d-pad up
+        },
+        {
+          number: 7, // d-pad down
+          outputType: 'pseudoButton',
+          pseudoButtonNumber: 15,
+          trueIfExactly: 32767,
+          falseIfLessThan: 32767,
+        },
+        {
+          number: 2, // Right analog thumb-stick left/right
+          outputType: 'servo360',
+          motorName: 'shoulders',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 15, // d-pad down
+        }
+      ],
+      buttonInputs: [
+        {
+          number: 3, // X
+          value: 1,
+          function: 'callShellScript',
+          script: 'playSoundFile',
+          arguments: ['/home/chrisl8/Mechonoid/DalekSounds/exterminate.mp3']
+        },
+        {
+          // This is a safety to stop the motors if the button is released while input is still active.
+          number: 6, // Left Shoulder
+          value: 0,
+          function: 'operateMotor',
+          motorName: 'motivator',
+          motorValue: 0,
+        }
+      ]
+    },
+    {
+      // run jstest and put the name found after "Joystick" here:
+      name: 'Wireless Steam Controller', // From jstest output
+      /*
+      Steam Wireless Controller
+      Left Shoulder: 6
+      Right Shoulder: 7
+      Left Trigger: 8
+      Right Trigger: 9
+      Left Extra Finger button: 15
+      Right Extra Finger button: 16
+      X: 4
+      Y: 5
+      A: 2
+      B: 3
+      Left Arrow by Steam Button: 10
+      Right Arrow by Steam Button: 11
+      */
+      deadZone: 150, // 1500
+      sensitivity: 100, // 350
+      /*
+      Axis and Button Inputs are arrays.
+      Each axis can have multiple entries,
+      typically a 'onlyActiveWhenButtonPressed' is used to determine when
+      a given entry is active, but nothing prevents many from
+      being active at once.
+      */
+      axisInputs: [
+        {
+          number: 0, // Analog thumb-stick left/right
+          outputType: 'twist',
+          motorName: 'motivator',
+          angularOrLinearSpeed: 'angularSpeed',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 6, // Left Shoulder
+        },
+        {
+          number: 1, // Analog thumb-stick up/down
+          outputType: 'twist',
+          motorName: 'motivator',
+          angularOrLinearSpeed: 'linearSpeed',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 6, // Left Shoulder
+        },
+        {
+          number: 2, // Right touch pad left/right
+          outputType: 'servo',
+          motorName: 'rightArmHorizontal',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 9, // Right Trigger
+          allowZeroWhileActive: false, // Zero is off for a servo, not "center".
+        },
+        {
+          number: 3, // Right touch pad up/down
+          outputType: 'servo',
+          motorName: 'rightArmVertical',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 9, // Right Trigger
+          allowZeroWhileActive: false, // Zero is off for a servo, not "center".
+        },
+        {
+          number: 4, // Left touch pad left/right
+          outputType: 'servo',
+          motorName: 'leftArmHorizontal',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 8, // Left Trigger
+          allowZeroWhileActive: false, // Zero is off for a servo, not "center".
+        },
+        {
+          number: 5, // Left touch pad up/down
+          outputType: 'servo',
+          motorName: 'leftArmVertical',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 8, // Left Trigger
+          allowZeroWhileActive: false, // Zero is off for a servo, not "center".
+        },
+        {
+          number: 3,
+          outputType: 'servo',
+          motorName: 'eyeStalk',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 7, // Right Shoulder
+          allowZeroWhileActive: false, // Zero is off for a servo, not "center".
+        },
+        {
+          number: 0,
+          outputType: 'servo360',
+          motorName: 'shoulders',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 16, // Right Finger Trigger
+        },
+        {
+          number: 0,
+          outputType: 'servo360',
+          motorName: 'head',
+          inputMax: 32767,
+          onlyActiveWhenButtonPressed: 15, // Left Finger Trigger
+        }
+      ],
+      buttonInputs: [
+        {
+          number: 4, // X
+          value: 1,
+          function: 'callShellScript',
+          script: 'playSoundFile',
+          arguments: ['/home/chrisl8/Mechonoid/DalekSounds/exterminate.mp3']
+        },
+        {
+          number: 5, // Y
+          value: 1,
+          function: 'callShellScript',
+          script: 'playSoundFile',
+          arguments: ['/home/chrisl8/Mechonoid/DalekSounds/Concretism - Teliffusion - 06 Genlock.mp3']
+        },
+        {
+          // This is a safety to stop the motors if the button is released while input is still active.
+          number: 6, // Left Shoulder
+          value: 0,
+          function: 'operateMotor',
+          motorName: 'motivator',
+          motorValue: 0,
+        }
+      ],
+    },
+  ],
+}

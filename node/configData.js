@@ -2,27 +2,38 @@
 
 import fs from 'fs';
 import JSON5 from 'json5';
+import prettier from 'prettier';
 
 const CONFIG_FOLDER_NAME = 'mechonoid';
 
 const configDataFile = `${process.env.HOME}/.${CONFIG_FOLDER_NAME}/config.json5`;
 
-let configDataImport = {};
+const saveConfigFile = (text) => {
+  const formatted = prettier.format(text, {
+    parser: 'json5',
+    singleQuote: true,
+    trailingComma: 'es5',
+    printWidth: 80,
+  });
+  fs.writeFileSync(configDataFile, formatted, 'utf8');
+};
+
+const readConfigFile = () => fs.readFileSync(configDataFile, 'utf8');
+
+let configDataTemp = {};
+// TODO: Catch missing REQUIRED entries (if there are any?)
 try {
-  configDataImport = JSON5.parse(fs.readFileSync(configDataFile, 'utf8'));
+  configDataTemp = JSON5.parse(readConfigFile());
 } catch (e) {
   console.error(`Error loading config file:`);
-  console.error(
-    `${process.env.HOME}/.${CONFIG_FOLDER_NAME}/config.json5 must exist!`,
-  );
-  console.error(
-    `This should be a link to .${CONFIG_FOLDER_NAME}/config.json5 in your home folder.`,
-  );
-  console.error(`Please run setup.sh again, or check your file system.`);
-
-  process.exit(1);
+  console.error(e.message);
+  configDataTemp = {
+    error: `There was an error loading your config file!`,
+    errorMessage: e.message,
+    errorPath: `${process.env.HOME}/.${CONFIG_FOLDER_NAME}/config.json5`,
+  };
 }
 
-const configData = configDataImport;
+const configData = configDataTemp;
 
-export default configData;
+export { configData, readConfigFile, saveConfigFile };
