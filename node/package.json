@@ -8,6 +8,7 @@
   "dependencies": {
     "@serialport/bindings-cpp": "^10.6.3",
     "base-64": "^1.0.0",
+    "body-parser": "^1.19.2",
     "es-main": "^1.0.2",
     "express": "^4.17.1",
     "json5": "^2.2.0",
@@ -17,7 +18,8 @@
     "pololu-maestro": "git+https://github.com/chrisl8/node-pololumaestro.git",
     "polycrc": "^1.0.1",
     "serialport": "^10.3.0",
-    "socket.io": "^4.0.0"
+    "socket.io": "^4.0.0",
+    "prettier": "^2.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -31,8 +33,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.8",
-    "jest": "^27.0.1",
-    "prettier": "^2.1.1"
+    "jest": "^27.0.1"
   },
   "scripts": {
     "start": "nodemon index.js",
