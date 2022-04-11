@@ -125,10 +125,16 @@ class Joystick extends events {
     };
 
     this.close = (callback) => {
-      fs.close(fd, callback);
+      if (fd) {
+        fs.close(fd, callback);
+      }
       fd = undefined;
       this.emit('close');
     };
+
+    process.on('exit', () => {
+      this.close();
+    });
 
     fs.open(this.devicePath, 'r', onOpen);
   }

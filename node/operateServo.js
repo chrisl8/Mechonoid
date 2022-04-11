@@ -46,6 +46,7 @@ const operateServo = ({ servoName, value }) => {
       );
     }
     updateRobotModelData(`servos.${servoName}.lastValue`, value);
+    // console.log(robotModel.servos[servoName].channel, target);
     // eslint-disable-next-line no-underscore-dangle
     hardwareFunctions[
       robotModel.servos[servoName].hardwareController

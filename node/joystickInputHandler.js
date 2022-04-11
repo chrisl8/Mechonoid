@@ -8,6 +8,8 @@ import operateServo from './operateServo.js';
 import getLinuxDeviceList from './getLinuxDeviceList.js';
 import wait from './wait.js';
 import joystickGetName from './joystickGetName.js';
+import operateServo360 from './operateServo360.js';
+import runShellScript from './runShellScript.js';
 
 const joystickDevicePathRoot = '/dev/input/';
 const activeJoystickControllers = {};
@@ -31,111 +33,167 @@ const inputHandler = (joystickDevice) => {
     // Save all button states for use elsewhere
     joystickController.buttonStates[inputData.number] = inputData.value;
 
-    // Perform actions based on button numbers in the config file
     if (
       joystickController.buttonInputs &&
-      joystickController.buttonInputs[inputData.number] &&
-      joystickController.buttonInputs[inputData.number][inputData.value]
+      joystickController.buttonInputs.length > 0
     ) {
-      const thisInput =
-        joystickController.buttonInputs[inputData.number][inputData.value];
-      console.log(thisInput);
+      joystickController.buttonInputs.forEach((buttonInput) => {
+        if (
+          buttonInput.number === inputData.number &&
+          buttonInput.value === inputData.value
+        ) {
+          if (buttonInput.function === 'callShellScript') {
+            runShellScript(buttonInput.script, buttonInput.arguments);
+          } else if (buttonInput.function === 'operateMotor') {
+            operateMotor({
+              motorName: buttonInput.motorName,
+              value: buttonInput.motorValue,
+            });
+            // } else {
+            //   console.log(inputData);
+            // For testing.
+          }
+        }
+      });
     }
   });
 
   joystick.on('axis', (inputData) => {
     if (
       joystickController.axisInputs &&
-      joystickController.axisInputs[inputData.number]
+      joystickController.axisInputs.length > 0
     ) {
-      const thisInput = joystickController.axisInputs[inputData.number];
-      if (thisInput.outputType === 'twist') {
-        let newValue = convertNumberRange(
-          inputData.value,
-          -thisInput.inputMax,
-          thisInput.inputMax,
-          -100,
-          100,
-        );
-        // Avoid any of that -0 nonsense
-        if (newValue !== 0) {
-          // Must be reversed to align with twist input expectations
-          newValue = -newValue;
-        }
-        newValue = Math.round(newValue);
-
-        if (!joystickController.twistMessages) {
-          joystickController.twistMessages = {};
-        }
-
-        if (!joystickController.twistMessages[thisInput.motorName]) {
-          joystickController.twistMessages[thisInput.motorName] = {
-            linearSpeed: 0,
-            angularSpeed: 0,
-          };
-        }
-
-        joystickController.twistMessages[thisInput.motorName][
-          thisInput.angularOrLinearSpeed
-        ] = newValue;
-
-        // TODO: Some sort of timeout to shut off motors if the input doesn't change for too long.
+      joystickController.axisInputs.forEach((axisInput) => {
         if (
-          joystickController.twistMessages[thisInput.motorName].linearSpeed ===
-            0 &&
-          joystickController.twistMessages[thisInput.motorName].angularSpeed ===
-            0
+          axisInput.number === inputData.number &&
+          (joystickController.buttonStates[
+            axisInput.onlyActiveWhenButtonPressed
+          ] ||
+            axisInput.onlyActiveWhenButtonPressed === undefined ||
+            axisInput.onlyActiveWhenButtonPressed === false)
         ) {
-          operateMotor({
-            motorName: thisInput.motorName,
-            value: 0,
-          });
-        } else {
-          operateMotor({
-            motorName: thisInput.motorName,
-            twist: {
-              linearSpeed:
-                joystickController.twistMessages[thisInput.motorName]
-                  .linearSpeed,
-              angularSpeed:
-                joystickController.twistMessages[thisInput.motorName]
-                  .angularSpeed,
-            },
-          });
-        }
-      } else if (thisInput.outputType === 'servo') {
-        if (
-          thisInput.onlyActiveWhenButtonPressed === undefined ||
-          thisInput.onlyActiveWhenButtonPressed === false ||
-          joystickController.buttonStates[thisInput.onlyActiveWhenButtonPressed]
-        ) {
-          let newValue = convertNumberRange(
-            inputData.value,
-            -thisInput.inputMax,
-            thisInput.inputMax,
-            -1000,
-            1000,
-          );
-          // Avoid any of that -0 nonsense
-          if (newValue !== 0) {
-            // Must be reversed to align with input expectations
-            newValue = -newValue;
-          }
-          newValue = Math.round(newValue);
-          if (newValue !== 0 || thisInput.allowZeroWhileActive) {
-            // console.log(
-            //   inputData.number,
-            //   inputData.value,
-            //   newValue,
-            //   thisInput.allowZeroWhileActive,
-            // );
-            operateServo({
-              servoName: thisInput.motorName,
+          if (axisInput.outputType === 'twist') {
+            let newValue = convertNumberRange(
+              inputData.value,
+              -axisInput.inputMax,
+              axisInput.inputMax,
+              -100,
+              100,
+            );
+            // Avoid any of that -0 nonsense
+            if (newValue !== 0) {
+              // Must be reversed to align with twist input expectations
+              newValue = -newValue;
+            }
+            newValue = Math.round(newValue);
+
+            if (!joystickController.twistMessages) {
+              joystickController.twistMessages = {};
+            }
+
+            if (!joystickController.twistMessages[axisInput.motorName]) {
+              joystickController.twistMessages[axisInput.motorName] = {
+                linearSpeed: 0,
+                angularSpeed: 0,
+              };
+            }
+
+            joystickController.twistMessages[axisInput.motorName][
+              axisInput.angularOrLinearSpeed
+            ] = newValue;
+
+            // TODO: Some sort of timeout to shut off motors if the input doesn't change for too long.
+            if (
+              joystickController.twistMessages[axisInput.motorName]
+                .linearSpeed === 0 &&
+              joystickController.twistMessages[axisInput.motorName]
+                .angularSpeed === 0
+            ) {
+              operateMotor({
+                motorName: axisInput.motorName,
+                value: 0,
+              });
+            } else {
+              operateMotor({
+                motorName: axisInput.motorName,
+                twist: {
+                  linearSpeed:
+                    joystickController.twistMessages[axisInput.motorName]
+                      .linearSpeed,
+                  angularSpeed:
+                    joystickController.twistMessages[axisInput.motorName]
+                      .angularSpeed,
+                },
+              });
+            }
+          } else if (axisInput.outputType === 'servo') {
+            let newValue = convertNumberRange(
+              inputData.value,
+              -axisInput.inputMax,
+              axisInput.inputMax,
+              -1000,
+              1000,
+            );
+            // Avoid any of that -0 nonsense
+            if (newValue !== 0) {
+              // Must be reversed to align with input expectations
+              newValue = -newValue;
+            }
+            newValue = Math.round(newValue);
+            if (newValue !== 0 || axisInput.allowZeroWhileActive) {
+              // console.log(
+              //   inputData.number,
+              //   inputData.value,
+              //   newValue,
+              //   axisInput.allowZeroWhileActive,
+              // );
+              console.log(inputData.value, newValue);
+              operateServo({
+                servoName: axisInput.motorName,
+                value: newValue,
+              });
+            }
+          } else if (axisInput.outputType === 'servo360') {
+            let newValue = convertNumberRange(
+              inputData.value,
+              -axisInput.inputMax,
+              axisInput.inputMax,
+              -1000,
+              1000,
+            );
+            if (axisInput.reversed && newValue !== 0) {
+              newValue = -newValue;
+            }
+            newValue = Math.round(newValue);
+            operateServo360({
+              servoName: axisInput.motorName,
               value: newValue,
             });
+          } else if (axisInput.outputType === 'pseudoButton') {
+            if (
+              inputData.value === axisInput.trueIfExactly ||
+              inputData.value > axisInput.trueIfGreaterThan ||
+              inputData.value < axisInput.trueIfLessThan
+            ) {
+              joystickController.buttonStates[
+                axisInput.pseudoButtonNumber
+                  ? axisInput.pseudoButtonNumber
+                  : inputData.number
+              ] = true;
+            } else if (
+              inputData.value === axisInput.falseIfExactly ||
+              inputData.value > axisInput.falseIfGreaterThan ||
+              inputData.value < axisInput.falseIfLessThan
+            ) {
+              joystickController.buttonStates[
+                axisInput.pseudoButtonNumber
+                  ? axisInput.pseudoButtonNumber
+                  : inputData.number
+              ] = false;
+            }
           }
         }
-      }
+      });
     }
   });
 
