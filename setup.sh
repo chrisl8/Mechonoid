@@ -145,6 +145,21 @@ if ! (id | grep dialout >/dev/null); then
   printf "${RED}You may have to reboot before you can use GPIO pins.${NC}\n"
 fi
 
+if [[ ${IS_RASPBERRY_PI} == "true" ]]; then
+  if ! (grep "dtparam=audio=on" /boot/firmware/usercfg.txt >/dev/null); then
+    printf "\n${GREEN}Setting up audio to always start on boot so that we can play audio files.${NC}\n"
+    # https://www.dedoimedo.com/computers/rpi4-ubuntu-mate-audio.html
+    sudo bash -ic "echo dtparam=audio=on >> /boot/firmware/usercfg.txt"
+  fi
+fi
+
+if ! (id | grep audio >/dev/null); then
+  printf "\n${GREEN}Adding your user to the 'audio' group.${NC}\n"
+  printf "${GREEN}Since the service runs as root, this is not technically required,${NC}\n"
+  printf "${GREEN}but testing can be frustrating if you didn't know to do this.${NC}\n"
+  sudo adduser "${USER}" audio >/dev/null
+fi
+
 printf "\n${YELLOW}[Installing and Initializing the Current Node LTS version]${NC}\n"
 
 if [[ -e ${HOME}/.nvm/nvm.sh ]]; then
