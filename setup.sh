@@ -89,7 +89,7 @@ if [[ ${IS_RASPBERRY_PI} == "true" ]]; then
   #libraspberrypi-bin provides extra commands for working with the Raspberry Pi specifically.
 fi
 
-printf "\n${YELLOW}[Installing additional Ubuntu and ROS Packages for ${GIT_REPO_AND_FOLDER}]${NC}\n"
+printf "\n${YELLOW}[Installing additional Ubuntu Packages for ${GIT_REPO_AND_FOLDER}]${NC}\n"
 printf "${LIGHTCYAN}This runs every time, in case new packages were added.${NC}\n"
 sudo apt install -y "${PACKAGE_TO_INSTALL_LIST[@]}"
 
@@ -256,6 +256,8 @@ printf "\n${LIGHT_PURPLE}[Updating PM2 and starting/restarting service.]${NC}\n"
 # Unfortunately the program has to run as root to use the GPIO library that I'm using
 sudo bash -ic "pm2 update;true"
 "${HOME}"/${GIT_REPO_AND_FOLDER}/startService.sh
+
+printf "${LIGHTCYAN}The web interface is now available at http://$(node ~/Mechonoid/node/ipAddress.js)$NC\n"
 
 if [[ ${NEW_CONFIG} == "1" ]]; then
   printf "\n${LIGHT_PURPLE}NOTICE NOTICE NOTICE NOTICE${NC}\n"
