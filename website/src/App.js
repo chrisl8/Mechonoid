@@ -15,7 +15,7 @@ const App = () => {
   const [socket, setSocket] = useState(null);
   const [robotModel, setRobotModel] = useState({
     status: 'Offline',
-    robotName: 'Robot Anything',
+    robotName: 'Mechonoid',
   });
   const [showApi, setShowApi] = useState(false);
   const [showOsCommands, setShowOsCommands] = useState(false);

@@ -50,7 +50,7 @@ fi
 
 if ! (sudo -nl | grep "(ALL) NOPASSWD: ALL" >/dev/null); then
   printf "\n${YELLOW}[Setting up ${USER} to run any command as root without password entry.]${NC}\n"
-  printf "${LIGHTCYAN}Remember, this is meant to run on a Pi on a robot.${NC}\n"
+  printf "${LIGHTCYAN}Remember, this is meant to run on a Pi on a battery powered platform.${NC}\n"
   printf "${LIGHTCYAN}Without this the code cannot access hardware such as the GPIO pins.${NC}\n"
   # Sometimes an old version gets left over and breaks future code runs.
   if [[ -e /tmp/"${USER}"_sudoers ]]; then
@@ -245,5 +245,6 @@ sudo bash -ic "pm2 update;true"
 if [[ ${NEW_CONFIG} == "1" ]]; then
   printf "\n${LIGHT_PURPLE}NOTICE NOTICE NOTICE NOTICE${NC}\n"
   printf "\n${LIGHT_PURPLE}You MUST edit ${HOME}/.${CONFIG_FOLDER_NAME}/config.json5${NC}\n"
-  printf "\n${LIGHT_PURPLE}It has been set up with example data that will not work for your robot.${NC}\n"
+  printf "\n${LIGHT_PURPLE}It has been set up with example data that will not work for your Mechonoid.${NC}\n"
+  printf "\n${RED}If this is the first time you ran this, please reboot now!${NC}\n"
 fi

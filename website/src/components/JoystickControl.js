@@ -5,7 +5,7 @@ class JoystickControl extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      joystickOutput: 'Use finger or mouse to drive robot!',
+      joystickOutput: 'Use finger or mouse to drive Mechonoid!',
     };
   }
   // const [joystickOutput, setJoystickOutput] = useState(

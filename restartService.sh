@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-sudo bash -ic "pm2 restart Robot;true"
+sudo bash -ic "pm2 restart Mechonoid;true"

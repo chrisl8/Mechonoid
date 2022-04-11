@@ -3,7 +3,7 @@ import { Button, Col, Row } from 'antd';
 
 const OsCommands = (props) => (
   <>
-    <h1>Commands to the Linux OS under on the Robot.</h1>
+    <h1>Commands to the Linux OS that Mechonoid is running on.</h1>
     <Row>
       <Col style={{ margin: 8 }}>
         <Button onClick={props.handleRebootButton}>Reboot</Button>

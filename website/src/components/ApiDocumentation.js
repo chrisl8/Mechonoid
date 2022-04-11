@@ -21,7 +21,7 @@ const ApiDocumentation = (props) => {
           thisGroup.push(
             <ul key={`${group}-${location}`}>
               <li>
-                Move Robot {group} to {location}:&nbsp;
+                Move Mechonoid {group} to {location}:&nbsp;
                 <a
                   href={`${pageURL}/sendServoToLocation/${group}/${location}`}
                   target="_blank"
@@ -72,7 +72,7 @@ const ApiDocumentation = (props) => {
   return (
     <>
       <h1>These are the direct HTTP GET requests that you can send</h1>
-      <h2>Robot Information and Status</h2>
+      <h2>Mechonoid Information and Status</h2>
       <ul>
         <li>
           <a
@@ -84,17 +84,17 @@ const ApiDocumentation = (props) => {
       </ul>
       <p>
         This will return a JSON object containing all information about the
-        robot and the current status of all parts.
+        Mechonoid and the current status of all parts.
         <br />
         Note that the commands below will always return 200 (OK) to acknowledge
-        receipt of your command. They will NOT return status of the robot.
+        receipt of your command. They will NOT return status of the Mechonoid.
         <br />
-        It is up to you to use the above URL to obtain the status of the robot
-        if you want to know the result of your input below.
+        It is up to you to use the above URL to obtain the status of the
+        Mechonoid if you want to know the result of your input below.
       </p>
       {switchedLocationTargetsAndValues.length > 0 && (
         <>
-          <h2>Send Robot Part to Switch controlled Location</h2>
+          <h2>Send Mechonoid Part to Switch controlled Location</h2>
           <ul>{switchedLocationTargetsAndValues}</ul>
         </>
       )}
@@ -107,8 +107,8 @@ const ApiDocumentation = (props) => {
             Negative is &quot;reverse&quot;, positive is &quot;forward&quot;, 0
             is stopped.
             <br />
-            The code on the robot will translate these ranges to the maximum and
-            minimum speed and stop set point of the servo.
+            The code on the Mechonoid will translate these ranges to the maximum
+            and minimum speed and stop set point of the servo.
             <br />
             The example is set to 0, because stopping the servo is the safest
             option.
@@ -126,8 +126,8 @@ const ApiDocumentation = (props) => {
             <br />
             0 is center, and -1000 and 1000 are the far ends.
             <br />
-            The code on the robot will translate these ranges to the maximum and
-            minimum set point of the servo.
+            The code on the Mechonoid will translate these ranges to the maximum
+            and minimum set point of the servo.
             <br />
           </p>
           <strong>
