@@ -11,5 +11,9 @@ done
 SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 # echo "${SCRIPT_DIR}" # For debugging
 
+# This has to be run at EVERY boot to allow Xbox One controllers to connect
+# via Bluetooth
+sudo bash -ic "echo 'Y' > /sys/module/bluetooth/parameters/disable_ertm"
+
 # Unfortunately the program has to run as root to use the GPIO library that I'm using
 sudo bash -ic "cd ${SCRIPT_DIR}/node;pm2 start ${SCRIPT_DIR}/node/pm2Config.json;cd"
