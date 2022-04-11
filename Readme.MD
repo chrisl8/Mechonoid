@@ -80,6 +80,40 @@ You must edit this file to describe your robot.
 
 A rather complex example has been placed there to give a hint as to how to make it work.
 
+# Optional Configuration
+
+Some various "how to" things you might want to know how to do for setup.
+
+### Remove unused packages
+This won't actually speed up the system, and the disk space they us is inconsequential, but it can speed up regular updates.  
+`sudo apt remove libreoffice-base-core libreoffice-common evolution rhythmbox shotwell transmission-common`
+
+### Upgrade the kernel
+You don't need to do this, but if you did, here is how:  
+`sudo apt install --install-recommends linux-generic-hwe-20.04`
+
+### Install and run Vino to allow remote control via VNC
+If you want to remote control the desktop, you can set up Vino and use VNC to connect to it.  
+```
+sudo apt install vino
+export DISPLAY=:0
+gsettings set org.gnome.Vino prompt-enabled false
+gsettings set org.gnome.Vino require-encryption false
+/usr/lib/vino/vino-server &
+```
+If you want Vino to start on boot
+https://askubuntu.com/a/1062730/452730
+
+- After startup, click the square array of dots in the lower left of the screen.
+- Type 'startup applications' (no quotes) into the search box that appears at the top of the screen. Clock on the resulting icon.
+- Click Add at the right of the box, Type 'start vino' in the Name box, and paste /usr/lib/vino/vino-server into the command box.
+- Click Add at the bottom of the box.
+- Close the app.
+
+But be aware that if the Pi boots with no monitor attached, Vino likely won't start.
+
+
+
 ## Attributions
 [Dalek Icon](https://thenounproject.com/icon/dalek-1472703/) by [Tatyana Kyul](https://thenounproject.com/kyul/) from the [Noun Project](https://thenounproject.com/).
 
