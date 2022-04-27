@@ -2,9 +2,11 @@
 
 # Mechonoid
 
-## Work in Progress
+Here is a [YouTube Video](https://youtu.be/gGNvhm3uXGA) of this project in action.
 
-This really isn't ready for public consumption yet.
+This is the code that runs my animatronic hobby project. It is designed to be configurable to work with many different robotic builds, but it is current only running on one device.
+
+Eventually I hope to add STL files for 3D printing and instructions for building something to work with this.
 
 ## Goal
 
