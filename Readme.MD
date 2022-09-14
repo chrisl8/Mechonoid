@@ -14,29 +14,33 @@ This framework of scripts, instructions, code, parts lists, and printable compon
 
 ## Target Hardware and Operating System
 
-This is intended to run on a [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) running [**Ubuntu** MATE 20.04 (LTS)](https://ubuntu-mate.org/download/arm64/focal/).  I use the [4GB](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) model, but you can try others at your own risk.
+This is intended to run on a [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) running [**Ubuntu** Desktop 22.04 (LTS)](https://ubuntu.com/tutorials/how-to-install-ubuntu-desktop-on-raspberry-pi-4).  I use the [4GB](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) model, but you can try others at your own risk.
  - Memory:
    - I have **not** found that the 8GB model provides any benefit.
    - I have **not** experimented much with a 2GB model. It may work, but I don't know.
  - CPU:
-   - I believe that the Pi 3 will struggle to keep up with the demands of ROS and continuous serial data transfer and processing, but I have not personally tested it.
- - The instructions will all focus on Ubuntu MATE, but the more generic "Ubuntu Server 20.04 LTS" for Raspberry Pi 4 should also work. File an issue if you discover problems making it work, or want to help improve the instructions.
+   - If you already have a Pi 3, try it. If you are buying a new board, I would not buy a Pi 3 now. I believe that the Pi 3 will struggle to keep up with future demands.
 
 The Pi is a very widely supported and readily available Single Board Computer (SBC) that runs efficiently on 5 volts that can be provided from a battery via step-down converters.
 
-I intend to use [Robot Operating System (ROS)](https://www.ros.org/) which requires Ubuntu, not Raspbian, to be easily installed.
+I **someday** intend to use [Robot Operating System (ROS)](https://www.ros.org/) which requires Ubuntu, not Raspbian, to be easily installed.
 
-[Ubuntu MATE](https://ubuntu-mate.org/raspberry-pi/) provides a useful desktop environment that the default Ubuntu 20.04 for Pi does not. This GUI is especially helpful for getting WiFi and Bluetooth connections working.
+[Ubuntu Desktop](https://ubuntu.com/tutorials/how-to-install-ubuntu-desktop-on-raspberry-pi-4) provides a useful desktop environment. This GUI is especially helpful for getting WiFi and Bluetooth connections working. My experience is that most people struggle with a "Server" only headless version of Ubuntu, but if you want to use the Server version of Ubuntu it should work exactly the same. You will just be on your own for getting WiFi set up and such.
 
 
 ## Raspberry Pi Setup
 
 Follow the steps below:
 
-### Install Ubuntu MATE 20.04 LTS
+### Install Ubuntu Desktop 22.04 LTS
 
-1. Download the [64-bit Focal version of Ubuntu for Raspberry Pi](https://ubuntu-mate.org/download/arm64/focal/) 
-2. Follow the [Ubuntu MATE Raspberry Pi Installation Guide](https://ubuntu-mate.org/raspberry-pi/install/) to install Ubuntu MATE 20.04 LTS.
+1. Download the latest [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
+2. Install it and pick Ubuntu Desktop 22.04  
+   For my Pi 4 4GB model pick: Other general purpose OS→Ubuntu→Ubuntu Desktop 22.04.1 LTS (RPi 4/400) 64-bit from
+    - Note that the last '.1' part of the version number may be newer, that is fine.
+3. Once the install is done put the SD card into the Pi and power it on.
+
+The OS setup should be self explanatory.
 
 ### Notes
  - Pick a Computer Name that you want your "robot" to be known by, as it will be seen and usd in the interface.
@@ -46,12 +50,11 @@ Follow the steps below:
  - The install can stall for a **long time, LIKE HOURS** at `waiting for unattended-upgr to exit`. Just walk away from it and wait it out.
 
 #### After Install and Boot
- - UN-check "Open Welcome when I log on." and Close the "Welcome" window.
  - If you do not want the screen to LOCK after it times out:
-   - Menu -> Preferences -> Screensaver
+   - Menu -> Settings -> Screensaver
      - UN-check "Lock screen when screensaver is active"
      - I also suggest setting Screensaver theme to "Blank screen"
- - Open up a Terminal (Menu -> System Tools -> MATE Terminal)
+ - Open up a Terminal (Menu -> System Tools -> Terminal)
    - You can expand the Terminal window to fill the screen with F11 if you like 
    - See the next step, "Mechonoid Install" for what to do next...
 
