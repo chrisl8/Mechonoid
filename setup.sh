@@ -18,8 +18,8 @@ BRIGHT_WHITE='\033[1;97m'
 NC='\033[0m' # NoColor
 
 printf "\n${YELLOW}[Checking Architecture, OS and Version]${NC}\n\n"
-if ! (grep "DISTRIB_ID=Ubuntu" /etc/lsb-release >/dev/null) || ! (grep "DISTRIB_RELEASE=20.04" /etc/lsb-release >/dev/null) || ! (grep "DISTRIB_CODENAME=focal" /etc/lsb-release >/dev/null); then
-  printf "${RED}[This script will only work on Ubuntu Focal (20.04)!!]${NC}\n"
+if ! (grep "DISTRIB_ID=Ubuntu" /etc/lsb-release >/dev/null) || ! (grep "DISTRIB_RELEASE=22.04" /etc/lsb-release >/dev/null) || ! (grep "DISTRIB_CODENAME=jammy" /etc/lsb-release >/dev/null); then
+  printf "${RED}[This script will only work on Ubuntu Jammy (22.04)!!]${NC}\n"
   printf "${RED}https://github.com/chrisl8/${GIT_REPO_AND_FOLDER}${NC}\n"
   exit 1
 fi
