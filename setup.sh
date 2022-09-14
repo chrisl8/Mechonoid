@@ -81,6 +81,8 @@ PACKAGE_TO_INSTALL_LIST+=(openssh-server)
 #openssh-server is helpful for remotely controlling the Raspberry Pi
 PACKAGE_TO_INSTALL_LIST+=(joystick)
 #joystick For remote control!
+PACKAGE_TO_INSTALL_LIST+=(python3-distutils)
+#python3-distutils Required to build GPIO pieces
 
 if [[ ${IS_RASPBERRY_PI} == "true" ]]; then
   PACKAGE_TO_INSTALL_LIST+=(rpi.gpio-common)
