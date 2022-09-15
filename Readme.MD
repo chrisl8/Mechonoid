@@ -27,6 +27,13 @@ I **someday** intend to use [Robot Operating System (ROS)](https://www.ros.org/)
 
 [Ubuntu Desktop](https://ubuntu.com/tutorials/how-to-install-ubuntu-desktop-on-raspberry-pi-4) provides a useful desktop environment. This GUI is especially helpful for getting WiFi and Bluetooth connections working. My experience is that most people struggle with a "Server" only headless version of Ubuntu, but if you want to use the Server version of Ubuntu it should work exactly the same. You will just be on your own for getting WiFi set up and such.
 
+## Raspberry Pi notes
+I highly suggest purchasing a basic "kit" from [CanKit](https://www.canakit.com/). You can get them on Amazon and from many local retailers like Best Buy, or directly from their site. They provide excellent support. (I have had to RMA a bad Pi before, and they were easy to work with!) They also provide quality components.
+
+**Do** get a good quality power supply with your Pi, again, preferably as part of a CanaKit. The Pi 2 worked **OK** with an old phone charger (although they notoriously would reset when plugging in USB peripherals if your power supply was poor), but the Pi 4 is **NOT** going to work reliably with a junk power supply.
+
+If you have never touched or used a Raspberry Pi before, definitely read over their own getting started materials here: https://www.raspberrypi.com/documentation/computers/getting-started.html
+
 
 ## Raspberry Pi Setup
 
@@ -34,27 +41,32 @@ Follow the steps below:
 
 ### Install Ubuntu Desktop 22.04 LTS
 
-1. Download the latest [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
+1. Download the latest [Raspberry Pi Imager](https://www.raspberrypi.com/software/) for your computer's Operating System.
 2. Install it and pick Ubuntu Desktop 22.04  
    For my Pi 4 4GB model pick: Other general purpose OS→Ubuntu→Ubuntu Desktop 22.04.1 LTS (RPi 4/400) 64-bit from
     - Note that the last '.1' part of the version number may be newer, that is fine.
+    - If you are trying this on a Pi 3 I suggest using the Server 32-bit version, but remember that you won't have a desktop for setting up WiFi and such if you do that.
 3. Once the install is done put the SD card into the Pi and power it on.
 
-The OS setup should be self explanatory.
+The OS setup should be self explanatory, but here are a few notes:
 
-### Notes
+### Initial Ubuntu Setup Notes
+ - If in doubt, just pick the defaults. Nothing here is forever.
+ - The "Where are you?" is just about your timezone, so just stick with the "major city" for your Time Zone.
  - Pick a Computer Name that you want your "robot" to be known by, as it will be seen and usd in the interface.
  - **I suggest setting "Log in automatically"** to make the robot easier to work with.
    - Just don't store sensitive information on this device.
  - I also suggest not making the login password overly complex, as you may need to use it in the field. Again, this isn't a place to keep your private data.
- - The install can stall for a **long time, LIKE HOURS** at `waiting for unattended-upgr to exit`. Just walk away from it and wait it out.
 
 #### After Install and Boot
+ - There is a box that comes up asking about connecting to services, "Live Upgrade", etc. You can just skip all of this stuff.
+ - When it asks to install updates go ahead and do it now. 
+   - The Mecahnoid setup script will also do it, but it takes a long time and it is nice to get it done now with the GUI rather than later.
+   - Be sure to wait for it to finish and let it reboot before proceeding further.
  - If you do not want the screen to LOCK after it times out:
-   - Menu -> Settings -> Screensaver
-     - UN-check "Lock screen when screensaver is active"
-     - I also suggest setting Screensaver theme to "Blank screen"
- - Open up a Terminal (Menu -> System Tools -> Terminal)
+   - Menu/"Show Applications" -> Settings -> Privacy -> Screen
+     - UN-check "Automatic Screen Lock"
+ - Open up a Terminal (Menu/"Show Applications -> Terminal)
    - You can expand the Terminal window to fill the screen with F11 if you like 
    - See the next step, "Mechonoid Install" for what to do next...
 
@@ -63,7 +75,7 @@ There is a script to install everything.
 
 **NOTE: This script gives your user access to run any command as root.**  
 In order to access hardware such as the GPIO pins, code must run as root.
-This is mean tto run on a Raspberry Pi on your robot, not a personal system with sensitive data on it.
+This is meant to run on a Raspberry Pi on your robot, not a personal system with sensitive data on it.
 
 ### Run:
 
@@ -90,8 +102,11 @@ A rather complex example has been placed there to give a hint as to how to make 
 Some various "how to" things you might want to know how to do for setup.
 
 ### Remove unused packages
-This won't actually speed up the system, and the disk space they us is inconsequential, but it can speed up regular updates.  
-`sudo apt remove libreoffice-base-core libreoffice-common evolution rhythmbox shotwell transmission-common`
+This won't actually speed up the system, and the disk space they use is inconsequential, **but it can speed up system updates**:  
+```
+sudo apt remove libreoffice-base-core libreoffice-common evolution rhythmbox shotwell transmission-common thunderbird
+sudo apt autoremove
+```
 
 ### Upgrade the kernel
 You don't need to do this, but if you did, here is how:  
@@ -116,7 +131,6 @@ https://askubuntu.com/a/1062730/452730
 - Close the app.
 
 But be aware that if the Pi boots with no monitor attached, Vino likely won't start.
-
 
 
 ## Attributions
