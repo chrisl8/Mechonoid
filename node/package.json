@@ -6,7 +6,7 @@
   "main": "index.js",
   "type": "module",
   "dependencies": {
-    "@serialport/bindings-cpp": "^10.6.3",
+    "@serialport/bindings-cpp": "^12.0.1",
     "base-64": "^1.0.0",
     "body-parser": "^1.19.2",
     "es-main": "^1.0.2",
@@ -17,9 +17,9 @@
     "pigpio": "^3.3.0",
     "pololu-maestro": "git+https://github.com/chrisl8/node-pololumaestro.git",
     "polycrc": "^1.0.1",
-    "serialport": "^10.3.0",
+    "serialport": "^12.0.0",
     "socket.io": "^4.0.0",
-    "prettier": "^2.1.1"
+    "prettier": "^3.2.5"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -27,7 +27,7 @@
     "@babel/plugin-syntax-top-level-await": "^7.14.5",
     "eslint": "^8.23.1",
     "eslint-config-airbnb": "^19.0.2",
-    "eslint-config-prettier": "^8.0.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.3",

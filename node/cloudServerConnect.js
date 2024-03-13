@@ -1,6 +1,5 @@
 import os from 'os';
 import fetch from 'node-fetch';
-import base64 from 'base-64';
 import ipAddress from './ipAddress.js';
 import { robotModel } from './robotModel.js';
 
@@ -20,9 +19,9 @@ const cloudServerConnect = async () => {
         body: JSON.stringify(body),
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Basic ${base64.encode(
+          Authorization: `Basic ${Buffer.from(
             `ignored:${robotModel.cloudServer.password}`,
-          )}`,
+          ).toString('base64')}`,
         },
       });
 

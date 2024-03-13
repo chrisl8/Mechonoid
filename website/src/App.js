@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import openSocket from 'socket.io-client';
 import { Layout, Row, Col, Button } from 'antd';
 import { isEmpty } from 'lodash';
-import './App.css';
 import Headers from './components/Headers';
 import ApiDocumentation from './components/ApiDocumentation';
 import OsCommands from './components/OsCommands';

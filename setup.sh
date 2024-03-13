@@ -162,7 +162,7 @@ if ! (id | grep audio >/dev/null); then
   sudo adduser "${USER}" audio >/dev/null
 fi
 
-printf "\n${YELLOW}[Installing and Initializing the Current Node LTS version]${NC}\n"
+printf "\n${YELLOW}[Installing and Initializing the latest Node version]${NC}\n"
 
 if [[ -e ${HOME}/.nvm/nvm.sh ]]; then
   printf "\n${LIGHTCYAN}Deactivating existing Node Version Manager:${NC}\n"
@@ -175,17 +175,19 @@ fi
 # The entire thing must run as root in order to access the GPIO pins,
 # so setting up root to do this
 printf "\n${LIGHTCYAN}Installing Node Version Manager as root:${NC}\n"
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | sudo bash
+NVM_TAG=$(curl -s curl -s https://api.github.com/repos/nvm-sh/nvm/releases/latest | grep tag_name | cut -d '"' -f 4)
+wget -qO- "https://raw.githubusercontent.com/nvm-sh/nvm/$NVM_TAG/install.sh" | bash
 
-printf "\n${LIGHTCYAN}Installing latest Node LTS version as root:${NC}\n"
-sudo bash -ic "nvm install --lts;true"
+printf "\n${LIGHTCYAN}Installing latest Node version as root:${NC}\n"
+sudo bash -ic "nvm install node --latest-npm;nvm use node;nvm alias default node;true"
 
 printf "\n${LIGHTCYAN}Installing pm2 for running service as root:${NC}\n"
 sudo bash -ic "npm install pm2@latest -g;true"
 
 # We will do as much setup and such as we can locally though.
 printf "\n${LIGHTCYAN}Installing Node Version Manager as ${USER}:${NC}\n"
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+NVM_TAG=$(curl -s curl -s https://api.github.com/repos/nvm-sh/nvm/releases/latest | grep tag_name | cut -d '"' -f 4)
+wget -qO- "https://raw.githubusercontent.com/nvm-sh/nvm/$NVM_TAG/install.sh" | bash
 export NVM_DIR="${HOME}/.nvm"
 # shellcheck source=/home/chrisl8/.nvm/nvm.sh
 [[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh" # This loads nvm
@@ -196,8 +198,9 @@ if ! (grep NVM_SYMLINK_CURRENT ~/.bashrc >/dev/null); then
   sh -c "echo \"export NVM_SYMLINK_CURRENT=true\" >> ~/.bashrc"
 fi
 
-printf "\n${LIGHTCYAN}Installing latest Node LTS version as ${USER}:${NC}\n"
-nvm install --lts
+printf "\n${LIGHTCYAN}Installing latest Node version as ${USER}:${NC}\n"
+nvm install node --latest-npm
+nvm use node
 nvm alias default node
 
 cd "${HOME}/${GIT_REPO_AND_FOLDER}/node"

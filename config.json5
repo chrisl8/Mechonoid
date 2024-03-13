@@ -4,7 +4,7 @@
   cloudServer: {
     exists: true,
     address: 'https://robots.ekpyroticfrood.net/',
-    password: 'fCGHzRfglK1XfKd01Cq2ry0O',
+    password: 'PASSWORD',
   },
   hardwareControllers: {
     roboClawOne: {
